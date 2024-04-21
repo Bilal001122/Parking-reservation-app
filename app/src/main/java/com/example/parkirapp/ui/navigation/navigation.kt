@@ -1,6 +1,8 @@
 package com.example.parkirapp.ui.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +21,13 @@ import com.example.parkirapp.ui.screens.reservation.ReservationScreen
 import com.example.parkirapp.ui.screens.signup.SignUpScreen
 
 @Composable
-fun Navigation(navController: NavHostController, startDestination: Destination, reservationModel: ReservationModel) {
+fun Navigation(
+    navController: NavHostController,
+    startDestination: Destination,
+    reservationModel: ReservationModel
+) {
+    val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+    val isLoggedIn: Boolean = pref.getBoolean("isLoggedIn", false)
     NavHost(navController = navController, startDestination = startDestination.route) {
         composable(Destination.OnBoarding.route) {
             OnBoardingScreen(navController)

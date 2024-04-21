@@ -77,7 +77,6 @@ fun BookingsScreen(navController: NavController,reservationModel: ReservationMod
 
         reservationModel.reservations.value.forEach { reservationInfo ->
             Box(
-
                 modifier = Modifier
                     .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
                     .background(

@@ -1,6 +1,8 @@
 package com.example.parkirapp.ui.screens.layout
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -17,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,7 +36,9 @@ import com.example.parkirapp.ui.navigation.Navigation
 @Composable
 fun LayoutScreen(reservationModel: ReservationModel) {
     val navController = rememberNavController()
-
+    val context = LocalContext.current
+    val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+    val isLoggedIn: Boolean = pref.getBoolean("isLoggedIn", false)
     Scaffold(
         bottomBar = {
             BottomNavigationBar(
@@ -45,12 +50,18 @@ fun LayoutScreen(reservationModel: ReservationModel) {
                 ),
                 navController = navController,
             ) { item ->
-                navController.navigate(item.route)
+                if (!isLoggedIn) {
+                    Toast.makeText(context, "Please login first", Toast.LENGTH_SHORT).show()
+                } else navController.navigate(item.route)
             }
         },
         modifier = Modifier.background(Color.Red)
     ) {
-        Navigation(navController = navController, startDestination = Destination.Map, reservationModel = reservationModel)
+        Navigation(
+            navController = navController,
+            startDestination = Destination.Map,
+            reservationModel = reservationModel
+        )
     }
 }
 
