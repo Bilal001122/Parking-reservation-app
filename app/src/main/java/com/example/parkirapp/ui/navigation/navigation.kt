@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.parkirapp.data.vm.ReservationModel
 import com.example.parkirapp.ui.screens.bookings.BookingsScreen
 import com.example.parkirapp.ui.screens.favorites.FavoritesScreen
 import com.example.parkirapp.ui.screens.layout.LayoutScreen
@@ -18,7 +19,7 @@ import com.example.parkirapp.ui.screens.reservation.ReservationScreen
 import com.example.parkirapp.ui.screens.signup.SignUpScreen
 
 @Composable
-fun Navigation(navController: NavHostController, startDestination: Destination) {
+fun Navigation(navController: NavHostController, startDestination: Destination, reservationModel: ReservationModel) {
     NavHost(navController = navController, startDestination = startDestination.route) {
         composable(Destination.OnBoarding.route) {
             OnBoardingScreen(navController)
@@ -42,7 +43,7 @@ fun Navigation(navController: NavHostController, startDestination: Destination) 
             ReservationScreen(parkingId, navController)
         }
         composable(Destination.Layout.route) {
-            LayoutScreen()
+            LayoutScreen(reservationModel = reservationModel)
         }
         composable(Destination.Map.route) {
             MapScreen(navController = navController)
@@ -54,7 +55,7 @@ fun Navigation(navController: NavHostController, startDestination: Destination) 
             ProfileScreen(navController = navController)
         }
         composable(Destination.Bookings.route) {
-            BookingsScreen(navController = navController)
+            BookingsScreen(navController = navController, reservationModel = reservationModel)
         }
         composable(Destination.Notifications.route) {
             NotificationsScreen(navController = navController)

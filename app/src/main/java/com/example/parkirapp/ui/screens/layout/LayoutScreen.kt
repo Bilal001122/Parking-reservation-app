@@ -24,13 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.parkirapp.data.vm.ReservationModel
 import com.example.parkirapp.ui.navigation.BottomNavBarItem
 import com.example.parkirapp.ui.navigation.Destination
 import com.example.parkirapp.ui.navigation.Navigation
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LayoutScreen() {
+fun LayoutScreen(reservationModel: ReservationModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -49,7 +50,7 @@ fun LayoutScreen() {
         },
         modifier = Modifier.background(Color.Red)
     ) {
-        Navigation(navController = navController, startDestination = Destination.Map)
+        Navigation(navController = navController, startDestination = Destination.Map, reservationModel = reservationModel)
     }
 }
 

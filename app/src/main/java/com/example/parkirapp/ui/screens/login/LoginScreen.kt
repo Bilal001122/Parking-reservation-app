@@ -1,5 +1,6 @@
 package com.example.parkirapp.ui.screens.login
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,12 +29,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import androidx.navigation.NavController
 import com.example.parkirapp.R
 import com.example.parkirapp.ui.navigation.Destination
@@ -55,6 +58,9 @@ fun LoginScreen(navController: NavController) {
     val checkBoxState = remember {
         mutableStateOf(false)
     }
+
+    val context = LocalContext.current
+
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -186,6 +192,10 @@ fun LoginScreen(navController: NavController) {
                 padding = 12.dp,
                 fontWeight = FontWeight.Medium
             ) {
+                val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+                pref.edit {
+                    putBoolean("isLoggedIn", true)
+                }
                 navController.navigate(Destination.ParkingList.route)
             }
 
