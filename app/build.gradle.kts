@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "1.9.21-1.0.15"
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -72,4 +74,31 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     implementation ("androidx.room:room-ktx:$room_version")
     testImplementation ("androidx.room:room-testing:$room_version")
+    //Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.6.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.6.0")
+    implementation ("com.google.code.gson:gson:2.8.5")
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    //Coroutine tests
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2")
+    //MockWebserver
+    testImplementation ("com.squareup.okhttp3:mockwebserver:4.9.1")
+    //Hilt
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+
+    implementation ("com.google.maps.android:maps-compose:4.4.1")
+
+    // Optionally, you can include the Compose utils library for Clustering,
+    // Street View metadata checks, etc.
+    implementation ("com.google.maps.android:maps-compose-utils:4.4.1")
+
+    // Optionally, you can include the widgets library for ScaleBar, etc.
+    implementation ("com.google.maps.android:maps-compose-widgets:4.4.1")
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

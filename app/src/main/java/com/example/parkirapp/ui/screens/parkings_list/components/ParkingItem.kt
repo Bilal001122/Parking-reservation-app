@@ -1,6 +1,5 @@
 package com.example.parkirapp.ui.screens.parkings_list.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,10 +33,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.parkirapp.R
-import com.example.parkirapp.data.models.Parking
+import com.example.parkirapp.data.api.models.Parking
 import com.example.parkirapp.ui.navigation.Destination
 import com.example.parkirapp.ui.theme.blackColor
+import com.example.parkirapp.utils.BASE_URL
 
 @Composable
 fun ParkingItem(parking: Parking, navController: NavController) {
@@ -72,8 +71,9 @@ fun ParkingItem(parking: Parking, navController: NavController) {
                 .clip(RoundedCornerShape(16.dp)),
 
             ) {
-            Image(
-                painter = painterResource(id = parking.image), contentDescription = null,
+            AsyncImage(
+                model = "${BASE_URL}${parking.image}",
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize(),
@@ -126,37 +126,39 @@ fun ParkingItem(parking: Parking, navController: NavController) {
                 )
             }
 
-            Column(
+            Column() {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
 
-            ) {
-                Row {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .border(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primary,
-                                width = 1.dp
-                            )
-                            .padding(horizontal = 12.dp, vertical = 2.dp)
-                    ) {
-                        Icon(
-                            Icons.Filled.LocationOn,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            modifier = Modifier.offset(x = 0.dp, y = 1.dp),
-                            text = parking.distanceFromLocation.toInt().toString() + " km",
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
 
+                ) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.SpaceBetween,
+//                        modifier = Modifier
+//                            .border(
+//                                shape = CircleShape,
+//                                color = MaterialTheme.colorScheme.primary,
+//                                width = 1.dp
+//                            )
+//                            .padding(horizontal = 12.dp, vertical = 2.dp)
+//                    ) {
+//                        Icon(
+//                            Icons.Filled.LocationOn,
+//                            contentDescription = null,
+//                            tint = MaterialTheme.colorScheme.primary,
+//                            modifier = Modifier.size(16.dp)
+//                        )
+//                        Spacer(modifier = Modifier.width(4.dp))
+//                        Text(
+//                            modifier = Modifier.offset(x = 0.dp, y = 1.dp),
+//                            text = " km",
+//                            fontSize = 12.sp,
+//                            textAlign = TextAlign.Center,
+//                        )
+//                    }
+//                    Spacer(modifier = Modifier.width(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -177,7 +179,7 @@ fun ParkingItem(parking: Parking, navController: NavController) {
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             modifier = Modifier.offset(x = 0.dp, y = 1.dp),
-                            text = parking.capacity.toString(),
+                            text = "${parking.allocatedPlaces} / ${parking.maxCapacity}",
                             fontSize = 12.sp,
                             textAlign = TextAlign.Center,
                         )

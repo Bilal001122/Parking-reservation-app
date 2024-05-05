@@ -25,10 +25,10 @@ sealed class Destination(
 
     data object Bookings : Destination("bookings")
 
-    data object Notifications : Destination("notifications")
-
     data object Favorites : Destination("favorites")
 
     data object Map : Destination("map")
+
+    data object Payment : Destination("payment")
 
 }

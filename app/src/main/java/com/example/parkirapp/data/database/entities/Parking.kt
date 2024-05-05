@@ -1,4 +1,4 @@
-package com.example.parkirapp.data.db
+package com.example.parkirapp.data.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,10 +1,8 @@
 package com.example.parkirapp.ui.screens.signup.components
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -13,14 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.parkirapp.R
 import com.example.parkirapp.ui.theme.blackColor
 
 @Composable
@@ -47,7 +43,8 @@ fun CustomTextField(hintText: String, field: MutableState<String>,keyboardType: 
         keyboardOptions = KeyboardOptions(
             keyboardType = keyboardType
         ),
-        onValueChange = { newValue: String ->
+        onValueChange = {
+            newValue: String ->
             field.value = newValue
         },
         placeholder = {

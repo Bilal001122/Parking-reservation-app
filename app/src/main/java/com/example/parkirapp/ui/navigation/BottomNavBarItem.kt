@@ -27,10 +27,10 @@ sealed class BottomNavBarItem(
         label = "Bookings"
     )
 
-    data object Notifications :
+    data object Parkings :
         BottomNavBarItem(
-            route = Destination.Notifications.route,
-            icon2 = R.drawable.notifications,
-            label = "Notifi"
+            route = Destination.ParkingList.route,
+            icon2 = R.drawable.car,
+            label = "Parkings"
         )
 }

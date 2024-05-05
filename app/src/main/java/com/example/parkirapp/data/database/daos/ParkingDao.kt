@@ -1,10 +1,11 @@
-package com.example.parkirapp.data.db
+package com.example.parkirapp.data.database.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.example.parkirapp.data.database.entities.Parking
 
 @Dao
 interface ParkingDao {

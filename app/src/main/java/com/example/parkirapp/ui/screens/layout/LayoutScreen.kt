@@ -5,8 +5,9 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -16,7 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,41 +27,55 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.parkirapp.data.vm.ReservationModel
+import com.example.parkirapp.data.api.vm.LoginVM
+import com.example.parkirapp.data.api.vm.ParkingsVM
+import com.example.parkirapp.data.api.vm.RegistrationVM
+import com.example.parkirapp.data.api.vm.ReservationVM
+import com.example.parkirapp.rememberAppState
 import com.example.parkirapp.ui.navigation.BottomNavBarItem
 import com.example.parkirapp.ui.navigation.Destination
 import com.example.parkirapp.ui.navigation.Navigation
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LayoutScreen(reservationModel: ReservationModel) {
+fun LayoutScreen(reservationModel: ReservationVM, registrationVM: RegistrationVM, loginVM: LoginVM, parkingsVM: ParkingsVM) {
     val navController = rememberNavController()
     val context = LocalContext.current
     val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
     val isLoggedIn: Boolean = pref.getBoolean("isLoggedIn", false)
+    val appState = rememberAppState(
+        navHostController = navController
+    )
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(
-                items = listOf(
-                    BottomNavBarItem.Map,
-                    BottomNavBarItem.Bookings,
-                    BottomNavBarItem.Notifications,
-                    BottomNavBarItem.Profile,
-                ),
-                navController = navController,
-            ) { item ->
-                if (!isLoggedIn) {
-                    Toast.makeText(context, "Please login first", Toast.LENGTH_SHORT).show()
-                } else navController.navigate(item.route)
-            }
+           if (appState.shouldShowBottomBar) {
+               BottomNavigationBar(
+                   items = listOf(
+                       BottomNavBarItem.Map,
+                       BottomNavBarItem.Bookings,
+                       BottomNavBarItem.Parkings,
+                       BottomNavBarItem.Profile,
+                   ),
+                   navController = navController,
+               ) { item ->
+                   if (!isLoggedIn) {
+                       Toast.makeText(context, "Please login first", Toast.LENGTH_SHORT).show()
+                   } else navController.navigate(item.route)
+               }
+           }
         },
         modifier = Modifier.background(Color.Red)
     ) {
-        Navigation(
-            navController = navController,
-            startDestination = Destination.Map,
-            reservationModel = reservationModel
-        )
+        Box(modifier = Modifier.padding(it)) {
+            Navigation(
+                navController = navController,
+                startDestination = Destination.Map,
+                reservationModel = reservationModel,
+                registrationVM = registrationVM,
+                loginVM = loginVM,
+                parkingsVM = parkingsVM
+            )
+        }
     }
 }
 
@@ -76,7 +90,10 @@ fun BottomNavigationBar(
     Box(
         modifier = Modifier.shadow(
             elevation = 20.dp,
-            shape = RoundedCornerShape(20.dp),
+//            shape = RoundedCornerShape(
+//                topStart = 30.dp,
+//                topEnd = 30.dp
+//            ),
             spotColor = Color.Black,
             ambientColor = Color.Black,
         )
@@ -84,8 +101,14 @@ fun BottomNavigationBar(
         NavigationBar(
             containerColor = Color.White,
             tonalElevation = 0.dp,
-            modifier = Modifier
-                .clip(RoundedCornerShape(30.dp))
+//            modifier = Modifier
+//                .clip(
+//                    RoundedCornerShape(
+//                        topStart = 30.dp,
+//                        topEnd = 30.dp
+//                    ),
+//                )
+
         ) {
             items.forEach { item ->
                 val selected = item.route == backStackEntry.value?.destination?.route
@@ -110,6 +133,7 @@ fun BottomNavigationBar(
                                 modifier = Modifier.size(25.dp)
                             )
                     },
+                    modifier = Modifier.navigationBarsPadding(),
                     label = {
                         Text(text = item.label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                     },

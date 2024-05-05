@@ -109,6 +109,7 @@ fun OnBoardingScreen(navController: NavController) {
                         if (pagerState.currentPage < pages.size - 1) {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         } else {
+                            navController.popBackStack(Destination.OnBoarding.route, inclusive = true)
                             navController.navigate(Destination.Login.route)
                         }
                     }

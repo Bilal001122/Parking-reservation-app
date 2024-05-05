@@ -1,6 +1,8 @@
 package com.example.parkirapp.ui.screens.login
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -39,13 +42,18 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.edit
 import androidx.navigation.NavController
 import com.example.parkirapp.R
+import com.example.parkirapp.data.api.vm.LoginVM
 import com.example.parkirapp.ui.navigation.Destination
 import com.example.parkirapp.ui.shared.CustomButton
 import com.example.parkirapp.ui.theme.blackColor
 import com.example.parkirapp.ui.theme.whiteColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, loginVM: LoginVM) {
 
     val emailFieldValue = remember {
         mutableStateOf("")
@@ -60,6 +68,8 @@ fun LoginScreen(navController: NavController) {
     }
 
     val context = LocalContext.current
+    val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+
 
 
     Column(
@@ -91,71 +101,50 @@ fun LoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
-                value = emailFieldValue.value,
-                maxLines = 1,
-                textStyle = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                ),
-                shape = RoundedCornerShape(
-                    size = 10.dp,
-                ),
-                colors = TextFieldDefaults.colors(
-                    disabledContainerColor = blackColor.copy(alpha = 0.04f),
-                    unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
-                    focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                ),
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.email),
-                        contentDescription = null
-                    )
-                },
-                onValueChange = { newValue: String ->
-                    emailFieldValue.value = newValue
-                },
-                placeholder = {
-                    Text(text = "Email", fontSize = 14.sp, textAlign = TextAlign.Center)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+            OutlinedTextField(value = emailFieldValue.value, maxLines = 1, textStyle = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                color = Color.Black,
+            ), shape = RoundedCornerShape(
+                size = 10.dp,
+            ), colors = TextFieldDefaults.colors(
+                disabledContainerColor = blackColor.copy(alpha = 0.04f),
+                unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
+                focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.primary,
+            ), leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.email), contentDescription = null
+                )
+            }, onValueChange = { newValue: String ->
+                emailFieldValue.value = newValue
+            }, placeholder = {
+                Text(text = "Email", fontSize = 14.sp, textAlign = TextAlign.Center)
+            }, modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(
-                value = passwordFieldValue.value,
-                maxLines = 1,
-                textStyle = TextStyle(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                ),
-                shape = RoundedCornerShape(
-                    size = 10.dp,
-                ),
-                colors = TextFieldDefaults.colors(
-                    disabledContainerColor = blackColor.copy(alpha = 0.04f),
-                    unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
-                    focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = MaterialTheme.colorScheme.primary,
-                ),
-                leadingIcon = {
-                    Icon(painter = painterResource(id = R.drawable.lock), contentDescription = null)
-                },
-                onValueChange = { newValue: String ->
-                    passwordFieldValue.value = newValue
-                },
-                placeholder = {
-                    Text(text = "Password", fontSize = 14.sp, textAlign = TextAlign.Center)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
+            OutlinedTextField(value = passwordFieldValue.value, maxLines = 1, textStyle = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                color = Color.Black,
+            ), shape = RoundedCornerShape(
+                size = 10.dp,
+            ), colors = TextFieldDefaults.colors(
+                disabledContainerColor = blackColor.copy(alpha = 0.04f),
+                unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
+                focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
+                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.primary,
+            ), leadingIcon = {
+                Icon(painter = painterResource(id = R.drawable.lock), contentDescription = null)
+            }, onValueChange = { newValue: String ->
+                passwordFieldValue.value = newValue
+            }, placeholder = {
+                Text(text = "Password", fontSize = 14.sp, textAlign = TextAlign.Center)
+            }, modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -165,18 +154,14 @@ fun LoginScreen(navController: NavController) {
             ) {
 
                 Checkbox(
-                    checked = checkBoxState.value,
-                    onCheckedChange = { newValue ->
+                    checked = checkBoxState.value, onCheckedChange = { newValue ->
                         checkBoxState.value = newValue
-                    },
-                    colors = CheckboxDefaults.colors(
+                    }, colors = CheckboxDefaults.colors(
                         checkedColor = MaterialTheme.colorScheme.primary,
                         checkmarkColor = whiteColor,
                         uncheckedColor = MaterialTheme.colorScheme.primary,
-                    ),
-                    modifier = Modifier.clip(RoundedCornerShape(20.dp))
+                    ), modifier = Modifier.clip(RoundedCornerShape(20.dp))
                 )
-
                 Text(text = "Remember me", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
             }
         }
@@ -189,14 +174,68 @@ fun LoginScreen(navController: NavController) {
             CustomButton(
                 text = "Sign in",
                 modifier = Modifier.fillMaxWidth(),
-                padding = 12.dp,
+                padding = 16.dp,
                 fontWeight = FontWeight.Medium
             ) {
-                val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
-                pref.edit {
-                    putBoolean("isLoggedIn", true)
+                when {
+                    emailFieldValue.value.isEmpty() -> {
+                        Toast.makeText(context, "Email is required", Toast.LENGTH_SHORT).show()
+                    }
+
+                    passwordFieldValue.value.isEmpty() -> {
+                        Toast.makeText(context, "Password is required", Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> {
+                        loginVM.userLogIn(emailFieldValue.value, passwordFieldValue.value)
+                    }
                 }
-                navController.navigate(Destination.ParkingList.route)
+            }
+
+            if (loginVM.isLoading.value == true) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+
+
+            if (loginVM.isLoggedInWithSuccess.value == true) {
+                navController.popBackStack(Destination.Login.route, inclusive = true)
+                navController.navigate(Destination.Layout.route) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    pref.edit {
+                        putBoolean("isLoggedIn", true)
+                        putString("token", loginVM.token.value)
+                        putString("userId", loginVM.currentUser?.id.toString())
+                    }
+                }
+                if(loginVM.showToast.value) {
+                    if (loginVM.toastMessage.value != null) {
+                        Toast.makeText(
+                            context, loginVM.toastMessage.value, Toast.LENGTH_SHORT
+                        ).show()
+                        loginVM.showToast.value = false
+                    }
+                }
+            } else if (loginVM.isLoggedInWithSuccess.value == false) {
+                if(loginVM.showToast.value) {
+                    if (loginVM.toastMessage.value != null) {
+                        Toast.makeText(
+                            context, loginVM.toastMessage.value, Toast.LENGTH_SHORT
+                        ).show()
+                        loginVM.showToast.value = false
+                    }
+                }
             }
 
             Text(
@@ -249,15 +288,13 @@ fun LoginScreen(navController: NavController) {
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                Text(
-                    text = "Sign up",
+                Text(text = "Sign up",
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.clickable {
                         navController.navigate(Destination.SignUp.route)
-                    }
-                )
+                    })
             }
             Spacer(modifier = Modifier.height(10.dp))
         }

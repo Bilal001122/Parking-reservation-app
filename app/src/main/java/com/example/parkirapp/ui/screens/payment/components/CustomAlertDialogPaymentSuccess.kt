@@ -1,4 +1,4 @@
-package com.example.parkirapp.ui.screens.signup.components
+package com.example.parkirapp.ui.screens.payment.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +26,7 @@ import com.example.parkirapp.ui.navigation.Destination
 import com.example.parkirapp.ui.shared.CustomButton
 
 @Composable
-fun CustomAlertDialog(navController: NavController, openDialog : MutableState<Boolean>) {
+fun CustomAlertDialogPaymentSuccess(navController: NavController) {
     AlertDialog(
         containerColor = Color.White,
         icon = {
@@ -42,7 +41,7 @@ fun CustomAlertDialog(navController: NavController, openDialog : MutableState<Bo
         },
         title = {
             Text(
-                text = "Congratulations!",
+                text = "Successful!",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.primary
@@ -54,19 +53,18 @@ fun CustomAlertDialog(navController: NavController, openDialog : MutableState<Bo
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Your account is ready to use", textAlign = TextAlign.Center)
+                Text(text = "Successfully made payment for your reservation", textAlign = TextAlign.Center)
             }
         },
         onDismissRequest = {
         },
         confirmButton = {
             CustomButton(
-                text = "Return to Login Screen", modifier = Modifier.fillMaxWidth(),
+                text = "Go to Homepage", modifier = Modifier.fillMaxWidth(),
                 padding = 12.dp,
                 fontWeight = FontWeight.Medium
             ) {
-                openDialog.value = false
-                navController.navigate(Destination.Login.route)
+                navController.navigate(Destination.Layout.route)
             }
         },
     )

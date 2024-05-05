@@ -1,8 +1,9 @@
-package com.example.parkirapp.data.db
+package com.example.parkirapp.data.database.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.example.parkirapp.data.database.entities.Parking
 
 @Entity(
     tableName = "reservation",

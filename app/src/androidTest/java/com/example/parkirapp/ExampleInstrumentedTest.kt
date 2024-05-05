@@ -3,9 +3,9 @@ package com.example.parkirapp
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.parkirapp.data.db.AppDatabase
-import com.example.parkirapp.data.db.Parking
-import com.example.parkirapp.data.db.Reservation
+import com.example.parkirapp.data.database.AppDatabase
+import com.example.parkirapp.data.database.entities.Parking
+import com.example.parkirapp.data.database.entities.Reservation
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

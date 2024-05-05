@@ -1,8 +1,11 @@
 package com.example.parkirapp
 
 import android.app.Application
-import com.example.parkirapp.data.db.AppDatabase
-import com.example.parkirapp.data.repos.ReservationRepo
+import com.example.parkirapp.data.api.repos.LoginRepository
+import com.example.parkirapp.data.api.repos.ParkingsRepository
+import com.example.parkirapp.data.api.repos.RegistrationRepository
+import com.example.parkirapp.data.api.repos.ReservationRepo
+import com.example.parkirapp.data.database.AppDatabase
 
 class MyApplication : Application() {
 
@@ -16,5 +19,17 @@ class MyApplication : Application() {
 
     val reservationRepo by lazy {
         ReservationRepo(reservationDao)
+    }
+
+    val registrationRepository by lazy {
+        RegistrationRepository()
+    }
+
+    val loginRepository by lazy {
+        LoginRepository()
+    }
+
+    val parkingsRepository by lazy {
+        ParkingsRepository()
     }
 }
