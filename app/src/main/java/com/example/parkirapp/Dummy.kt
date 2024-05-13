@@ -1,8 +1,5 @@
 package com.example.parkirapp
 
-import com.example.parkirapp.data.api.models.Reservation
-import com.example.parkirapp.data.api.models.ReservationStatus
-
 //val parkingList = listOf(
 //    Parking(
 //        id = 1,
@@ -124,71 +121,71 @@ import com.example.parkirapp.data.api.models.ReservationStatus
 //        distanceFromLocation = 1.5
 //    )
 //)
-
-val bookingsList = listOf(
-    Reservation(
-        1,
-        "10:00",
-        "12:00",
-        ReservationStatus.ONGOING,
-        5,
-        15.00,
-        "Central Parking",
-        // Replace with your default parking image resource
-        R.drawable.parking,
-        "123 Main St, Anytown, CA"
-    ),
-    Reservation(
-        2,
-        "14:00",
-        "16:00",
-        ReservationStatus.COMPLETED,
-        10,
-        20.00,
-        "City Garage",
-        R.drawable.parking,
-        "456 Elm St, Anytown, CA"
-    ),
-    Reservation(
-        2,
-        "14:00",
-        "16:00",
-        ReservationStatus.COMPLETED,
-        15,
-        20.00,
-        "City Garage",
-        R.drawable.parking,
-        "456 Elm St, Anytown, CA"
-    ),
-    Reservation(
-        10,
-        "10:00",
-        "14:00",
-        ReservationStatus.ONGOING,
-        17,
-        10.00,
-        "University Parking",
-        R.drawable.parking,
-        "789 College Ave, Anytown, CA"
-    ), Reservation(
-        12,
-        "10:00",
-        "14:00",
-        ReservationStatus.CANCELED,
-        20,
-        10.00,
-        "University Parking",
-        R.drawable.parking,
-        "789 College Ave, Anytown, CA"
-    ), Reservation(
-        12,
-        "10:00",
-        "14:00",
-        ReservationStatus.CANCELED,
-        25,
-        10.00,
-        "University Parking",
-        R.drawable.parking,
-        "789 College Ave, Anytown, CA"
-    )
-)
+//
+//val bookingsList = listOf(
+//    Reservation(
+//        1,
+//        "10:00",
+//        "12:00",
+//        ReservationStatus.ONGOING,
+//        5,
+//        15.00,
+//        "Central Parking",
+//        // Replace with your default parking image resource
+//        R.drawable.parking,
+//        "123 Main St, Anytown, CA"
+//    ),
+//    Reservation(
+//        2,
+//        "14:00",
+//        "16:00",
+//        ReservationStatus.COMPLETED,
+//        10,
+//        20.00,
+//        "City Garage",
+//        R.drawable.parking,
+//        "456 Elm St, Anytown, CA"
+//    ),
+//    Reservation(
+//        2,
+//        "14:00",
+//        "16:00",
+//        ReservationStatus.COMPLETED,
+//        15,
+//        20.00,
+//        "City Garage",
+//        R.drawable.parking,
+//        "456 Elm St, Anytown, CA"
+//    ),
+//    Reservation(
+//        10,
+//        "10:00",
+//        "14:00",
+//        ReservationStatus.ONGOING,
+//        17,
+//        10.00,
+//        "University Parking",
+//        R.drawable.parking,
+//        "789 College Ave, Anytown, CA"
+//    ), Reservation(
+//        12,
+//        "10:00",
+//        "14:00",
+//        ReservationStatus.CANCELED,
+//        20,
+//        10.00,
+//        "University Parking",
+//        R.drawable.parking,
+//        "789 College Ave, Anytown, CA"
+//    ), Reservation(
+//        12,
+//        "10:00",
+//        "14:00",
+//        ReservationStatus.CANCELED,
+//        25,
+//        10.00,
+//        "University Parking",
+//        R.drawable.parking,
+//        "789 College Ave, Anytown, CA"
+//    )
+//)

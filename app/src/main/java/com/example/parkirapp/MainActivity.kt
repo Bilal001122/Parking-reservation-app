@@ -10,17 +10,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.example.parkirapp.data.api.vm.LoginVM
-import com.example.parkirapp.data.api.vm.ParkingsVM
-import com.example.parkirapp.data.api.vm.RegistrationVM
-import com.example.parkirapp.data.api.vm.ReservationVM
-import com.example.parkirapp.ui.navigation.Destination
-import com.example.parkirapp.ui.navigation.Navigation
-import com.example.parkirapp.ui.theme.ParkirAppTheme
+import com.example.parkirapp.business_logic.vm.LoginVM
+import com.example.parkirapp.business_logic.vm.ParkingsVM
+import com.example.parkirapp.business_logic.vm.RegistrationVM
+import com.example.parkirapp.business_logic.vm.ReservationVM
+import com.example.parkirapp.presentation.navigation.Destination
+import com.example.parkirapp.presentation.navigation.Navigation
+import com.example.parkirapp.presentation.theme.ParkirAppTheme
 
 class MainActivity : ComponentActivity() {
-    private val reservationModel: ReservationVM by lazy {
-        ReservationVM((application as MyApplication).reservationRepo)
+    private val reservationVM: ReservationVM by lazy {
+        ReservationVM((application as MyApplication).reservationRepository)
     }
 
     private val registrationVM: RegistrationVM by viewModels {
@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                     Navigation(
                         navController = rememberNavController(),
                         startDestination = if (isLoggedIn) Destination.Layout else Destination.OnBoarding,
-                        reservationModel = reservationModel,
+                        reservationVM = reservationVM,
                         registrationVM = registrationVM,
                         loginVM = loginVM,
                         parkingsVM = parkingsVM

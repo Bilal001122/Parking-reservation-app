@@ -1,18 +1,61 @@
 package com.example.parkirapp.data.api
 
 import com.example.parkirapp.data.api.models.Parking
-import com.example.parkirapp.data.api.models.UserData
-import com.example.parkirapp.data.api.models.UserLogin
-import com.example.parkirapp.data.api.models.UserResponse
-import com.example.parkirapp.data.api.models.UserResponseLogin
+import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.data.api.models.User
 import com.example.parkirapp.utils.BASE_URL
+import com.google.gson.annotations.SerializedName
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+
+data class UserResponse(
+    @SerializedName("status") val status: String,
+    @SerializedName("user") val user: User
+)
+
+data class UserResponseLogin(
+    @SerializedName("status") val status: String,
+    @SerializedName("user") val user: User,
+    @SerializedName("token") val token: String
+)
+
+data class UserData(
+    val email: String,
+    val password: String,
+    val fullName: String,
+    val dateOfBirth: String,
+    val phone: String,
+    val gender: String
+)
+
+data class UserLogin(
+    @SerializedName("email")
+    val email: String,
+    @SerializedName("password")
+    val password: String
+)
+
+data class CancelBookingRequest(val bookingId: Int)
+
+data class CompleteBookingRequest(val bookingId: Int)
+
+data class CreateBookingRequest(
+    val parkingId: Int,
+    val booking: BookingRequest,
+)
+
+data class BookingRequest(
+    val startHour: String,
+    val endHour: String,
+    val date: String,
+    val totalPrice: Double,
+    )
 
 interface Endpoints {
     @POST("api/auth/signUp")
@@ -30,6 +73,28 @@ interface Endpoints {
 
     @GET("api/parking/{id}")
     suspend fun getParkingById(@Path("id") id: Int): Response<Parking>
+
+    @GET("api/booking")
+    suspend fun getUserBookings(@Header("Authorization") authHeader: String): Response<List<Reservation>>
+
+    @POST("api/booking/cancel")
+    suspend fun cancelBooking(
+        @Header("Authorization") authHeader: String,
+        @Body bookingId: CancelBookingRequest
+    ): Response<Reservation>
+
+    @POST("api/booking/complete")
+    suspend fun completeBooking(
+        @Header("Authorization") authHeader: String,
+        @Body bookingId: CompleteBookingRequest
+    ): Response<Reservation>
+
+
+    @POST("api/booking/create")
+    suspend fun createBooking(
+        @Header("Authorization") authHeader: String,
+        @Body booking: CreateBookingRequest
+    ): Response<Reservation>
 
     companion object {
         var endpoint: Endpoints? = null

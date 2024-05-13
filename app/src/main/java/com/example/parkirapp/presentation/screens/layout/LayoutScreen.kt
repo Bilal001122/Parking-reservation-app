@@ -1,0 +1,136 @@
+package com.example.parkirapp.presentation.screens.layout
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.parkirapp.business_logic.vm.LoginVM
+import com.example.parkirapp.business_logic.vm.ParkingsVM
+import com.example.parkirapp.business_logic.vm.RegistrationVM
+import com.example.parkirapp.business_logic.vm.ReservationVM
+import com.example.parkirapp.presentation.navigation.BottomNavBarItem
+import com.example.parkirapp.presentation.navigation.Destination
+import com.example.parkirapp.presentation.navigation.Navigation
+import com.example.parkirapp.rememberAppState
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun LayoutScreen(reservationVM: ReservationVM, registrationVM: RegistrationVM, loginVM: LoginVM, parkingsVM: ParkingsVM) {
+    val navController = rememberNavController()
+    val context = LocalContext.current
+    val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+    val isLoggedIn: Boolean = pref.getBoolean("isLoggedIn", false)
+    val appState = rememberAppState(
+        navHostController = navController
+    )
+    Scaffold(
+        bottomBar = {
+           if (appState.shouldShowBottomBar) {
+               BottomNavigationBar(
+                   items = listOf(
+                       BottomNavBarItem.Map,
+                       BottomNavBarItem.Bookings,
+                       BottomNavBarItem.Parkings,
+                       BottomNavBarItem.Profile,
+                   ),
+                   navController = navController,
+               ) { item ->
+                   if (!isLoggedIn) {
+                       Toast.makeText(context, "Please login first", Toast.LENGTH_SHORT).show()
+                   } else navController.navigate(item.route)
+               }
+           }
+        },
+        modifier = Modifier.background(Color.Red)
+    ) {
+        Box(modifier = Modifier.padding(it)) {
+            Navigation(
+                navController = navController,
+                startDestination = Destination.Map,
+                reservationVM = reservationVM,
+                registrationVM = registrationVM,
+                loginVM = loginVM,
+                parkingsVM = parkingsVM
+            )
+        }
+    }
+}
+
+
+@Composable
+fun BottomNavigationBar(
+    items: List<BottomNavBarItem>,
+    navController: NavController,
+    onItemClick: (BottomNavBarItem) -> Unit
+) {
+    val backStackEntry = navController.currentBackStackEntryAsState()
+    Box(
+        modifier = Modifier.shadow(
+            elevation = 20.dp,
+            spotColor = Color.Black,
+            ambientColor = Color.Black,
+        )
+    ) {
+        NavigationBar(
+            containerColor = Color.White,
+            tonalElevation = 0.dp,
+        ) {
+            items.forEach { item ->
+                val selected = item.route == backStackEntry.value?.destination?.route
+                NavigationBarItem(
+                    colors = NavigationBarItemDefaults.colors(
+                        selectedIconColor = Color.White,
+                        unselectedIconColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                        indicatorColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    icon = {
+                        if (item.icon2 != null)
+                            Icon(
+                                painter = painterResource(id = item.icon2),
+                                contentDescription = item.label,
+                                modifier = Modifier.size(25.dp)
+                            )
+                        else if (item.icon != null)
+                            Icon(
+                                imageVector = item.icon,
+                                contentDescription = item.label,
+                                modifier = Modifier.size(25.dp)
+                            )
+                    },
+                    modifier = Modifier.navigationBarsPadding(),
+                    label = {
+                        Text(text = item.label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                    },
+                    selected = selected,
+                    onClick = {
+                        onItemClick(item)
+                    },
+                )
+            }
+        }
+    }
+}

@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.parkirapp.data.api.repos.LoginRepository
 import com.example.parkirapp.data.api.repos.ParkingsRepository
 import com.example.parkirapp.data.api.repos.RegistrationRepository
-import com.example.parkirapp.data.api.repos.ReservationRepo
+import com.example.parkirapp.data.api.repos.ReservationRepository
 import com.example.parkirapp.data.database.AppDatabase
 
 class MyApplication : Application() {
@@ -17,8 +17,8 @@ class MyApplication : Application() {
         dataBase.getReservationDao()
     }
 
-    val reservationRepo by lazy {
-        ReservationRepo(reservationDao)
+    val reservationRepository by lazy {
+        ReservationRepository()
     }
 
     val registrationRepository by lazy {

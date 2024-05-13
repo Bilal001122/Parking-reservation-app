@@ -1,8 +1,8 @@
 package com.example.parkirapp.data.api.repos
 
 import com.example.parkirapp.data.api.Endpoints
-import com.example.parkirapp.data.api.models.UserData
-import com.example.parkirapp.data.api.models.UserResponse
+import com.example.parkirapp.data.api.UserData
+import com.example.parkirapp.data.api.UserResponse
 import retrofit2.Response
 
 class RegistrationRepository {

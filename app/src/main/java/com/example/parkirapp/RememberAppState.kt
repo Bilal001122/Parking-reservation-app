@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.parkirapp.ui.navigation.BottomNavBarItem
+import com.example.parkirapp.presentation.navigation.BottomNavBarItem
 
 @Composable
 fun rememberAppState(

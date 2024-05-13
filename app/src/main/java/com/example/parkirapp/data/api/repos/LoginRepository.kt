@@ -1,8 +1,8 @@
 package com.example.parkirapp.data.api.repos
 
 import com.example.parkirapp.data.api.Endpoints
-import com.example.parkirapp.data.api.models.UserLogin
-import com.example.parkirapp.data.api.models.UserResponseLogin
+import com.example.parkirapp.data.api.UserLogin
+import com.example.parkirapp.data.api.UserResponseLogin
 import retrofit2.Response
 
 class LoginRepository {
