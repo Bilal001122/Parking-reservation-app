@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,8 +36,7 @@ import com.example.parkirapp.presentation.screens.bookings.components.BookingIte
 import com.example.parkirapp.presentation.screens.bookings.components.BookingItemCompleted
 import com.example.parkirapp.presentation.screens.bookings.components.BookingItemOnGoing
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition")
+@SuppressLint("CoroutineCreationDuringComposition", "UnusedContentLambdaTargetStateParameter")
 @Composable
 fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
     val context = LocalContext.current
@@ -51,8 +49,6 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
         }
     }
 
-//    val database = AppDatabase.buildDatabase(context)
-//    val parkingDao = database.getParkingDao()
     val onGoingState = remember {
         mutableStateOf(true)
     }
@@ -193,19 +189,33 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
                     )
             ) {
                 items(
-                    bookingsListState.toList()
+                    bookingsListState.toList(),
                 ) { booking ->
-                    if (booking.status == "ONGOING")
-                        BookingItemOnGoing(booking = booking, navController = navController, reservationVM = reservationVM)
-                    if (booking.status == "COMPLETED")
-                        BookingItemCompleted(booking = booking, navController = navController, reservationVM = reservationVM)
-                    if (booking.status == "CANCELED")
-                        BookingItemCanceled(booking = booking, navController = navController)
+                        when (booking.status) {
+                            "ONGOING" ->
+                                BookingItemOnGoing(
+                                    booking = booking,
+                                    navController = navController,
+                                    reservationVM = reservationVM
+                                )
+                            "COMPLETED" ->
+                                BookingItemCompleted(
+                                    booking = booking,
+                                    navController = navController,
+                                    reservationVM = reservationVM
+                                )
+
+                            "CANCELED" ->
+                                BookingItemCanceled(
+                                    booking = booking,
+                                    navController = navController
+                                )
+                        }
+
                 }
             }
 
+
         }
     }
-
-
 }

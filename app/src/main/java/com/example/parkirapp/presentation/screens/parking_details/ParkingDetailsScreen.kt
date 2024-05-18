@@ -1,5 +1,6 @@
 package com.example.parkirapp.presentation.screens.parking_details
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,9 +44,13 @@ import com.example.parkirapp.utils.BASE_URL
 @Composable
 fun ParkingDetailsScreen(parkingId: Int?, navController: NavHostController, parkingsVM: ParkingsVM) {
 
+    val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
     LaunchedEffect(Unit) {
         if (parkingId != null) {
             parkingsVM.getParkingById(parkingId)
+        }
+        pref.getString("token", null)?.let {
+            parkingsVM.getFavoriteParkings(it)
         }
     }
 
@@ -82,11 +89,7 @@ fun ParkingDetailsScreen(parkingId: Int?, navController: NavHostController, park
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                10.dp
-                            ),
-
+                            .fillMaxWidth().padding(vertical = 10.dp).padding(start = 10.dp),
                         ) {
                         Column {
                             Text(
@@ -98,11 +101,18 @@ fun ParkingDetailsScreen(parkingId: Int?, navController: NavHostController, park
                             Text(text = parkingsVM.parking.value!!.exactLocationDetails)
                         }
                         IconButton(
-                            onClick = {},
-
+                            onClick = {
+                                pref.getString("token", null)?.let {
+                                    if(parkingsVM.favoriteParkings.any { it.id == parkingsVM.parking.value!!.id }) {
+                                        parkingsVM.removeParkingFromFavorites(it, parkingsVM.parking.value!!.id)
+                                    } else {
+                                        parkingsVM.addParkingToFavorites(it, parkingsVM.parking.value!!.id)
+                                    }
+                                }
+                            },
                             ) {
                             Icon(
-                                imageVector = Icons.Filled.Favorite,
+                                imageVector = if(parkingsVM.favoriteParkings.any { it.id == parkingsVM.parking.value!!.id }) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(30.dp)

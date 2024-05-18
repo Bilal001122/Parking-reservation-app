@@ -50,6 +50,26 @@ class LoginVM(
         }
     }
 
+    fun getUserInformation(token: String) {
+        viewModelScope.launch {
+            isLoading.value = true
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = loginRepository.getUserInfo(token)
+                    if (response.isSuccessful) {
+                        currentUser = response.body()?.user
+                        isLoading.value = false
+                    } else {
+                        isLoading.value = false
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    isLoading.value = false
+                }
+            }
+        }
+    }
+
     class Factory(private val loginRepository: LoginRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return LoginVM(loginRepository) as T

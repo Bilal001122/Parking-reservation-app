@@ -84,7 +84,7 @@ fun OnBoardingScreen(navController: NavController) {
                         cornersRound = 100.dp,
                         fontSize = 14.sp,
                         modifier = Modifier.fillMaxWidth(),
-                        padding = 10.dp,
+                        padding = 12.dp,
                         background = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
                         textColor = MaterialTheme.colorScheme.primary
                     ) {
@@ -103,7 +103,7 @@ fun OnBoardingScreen(navController: NavController) {
                     cornersRound = 100.dp,
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth(),
-                    padding = 10.dp,
+                    padding = 12.dp,
                 ) {
                     scope.launch {
                         if (pagerState.currentPage < pages.size - 1) {

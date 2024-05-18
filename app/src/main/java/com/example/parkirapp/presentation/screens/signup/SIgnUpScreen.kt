@@ -183,7 +183,7 @@ fun SignUpScreen(navController: NavController, registrationVM: RegistrationVM) {
         ) {
             CustomButton(
                 text = "Sign Up", modifier = Modifier.fillMaxWidth(),
-                padding = 16.dp,
+                padding = 12.dp,
                 fontWeight = FontWeight.Medium
             ) {
                 when {

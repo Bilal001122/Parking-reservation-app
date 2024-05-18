@@ -42,6 +42,7 @@ import com.example.parkirapp.utils.BASE_URL
 
 @Composable
 fun ParkingItem(parking: Parking, navController: NavController) {
+
     Row(
         modifier = Modifier
             .padding(

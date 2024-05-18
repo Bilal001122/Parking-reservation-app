@@ -57,6 +57,34 @@ data class BookingRequest(
     val totalPrice: Double,
     )
 
+data class AddParkingToFavoritesResponse(
+    val id: Int,
+    @SerializedName("UserId")
+    val userId: Int,
+    @SerializedName("ParkingId")
+    val parkingId: Int,
+    @Transient
+    val updatedAt : String,
+    @Transient
+    val createdAt : String
+)
+
+data class RemoveParkingFromFavoritesResponse(
+    val message : String
+)
+
+data class GetFavoriteParkingsResponse(
+    val favorites: List<Parking>
+)
+
+data class RemoveFavoriteParkingRequest(
+    val parkingId: Int
+)
+
+data class AddParkingToFavoritesRequest(
+    val parkingId: Int
+)
+
 interface Endpoints {
     @POST("api/auth/signUp")
     suspend fun signUpUser(
@@ -95,6 +123,24 @@ interface Endpoints {
         @Header("Authorization") authHeader: String,
         @Body booking: CreateBookingRequest
     ): Response<Reservation>
+
+    @GET("api/auth/myProfile")
+    suspend fun getUserInformation(@Header("Authorization") authHeader: String): Response<UserResponse>
+
+    @POST("api/parking/favorite")
+    suspend fun addParkingToFavorites(
+        @Header("Authorization") authHeader: String,
+        @Body addParkingToFavoritesRequest: AddParkingToFavoritesRequest
+    ): Response<AddParkingToFavoritesResponse>
+
+    @POST("api/parking/removeFavorite")
+    suspend fun removeParkingFromFavorites(
+        @Header("Authorization") authHeader: String,
+        @Body removeFavoriteParkingRequest: RemoveFavoriteParkingRequest
+    ): Response<RemoveParkingFromFavoritesResponse>
+
+    @GET("api/parking/favorites")
+    suspend fun getFavoriteParkings(@Header("Authorization") authHeader: String): Response<GetFavoriteParkingsResponse>
 
     companion object {
         var endpoint: Endpoints? = null

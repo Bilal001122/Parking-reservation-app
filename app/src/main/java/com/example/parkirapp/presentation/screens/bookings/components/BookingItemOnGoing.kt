@@ -1,6 +1,9 @@
 package com.example.parkirapp.presentation.screens.bookings.components
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,14 +67,19 @@ fun BookingItemOnGoing(
     val showBottomSheetForBooking = remember {
         mutableStateOf(false)
     }
-
     val context = LocalContext.current
     val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
     val authHeader: String? = pref.getString("token", "")
     val sheetStateForCancelBooking = rememberModalBottomSheetState()
     val sheetForShowingTicket = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+    val visibility = remember {
+        mutableStateOf(false)
+    }
 
+    LaunchedEffect(Unit) {
+        visibility.value = true
+    }
 
     if (
         showBottomSheetForBooking.value
@@ -216,162 +225,167 @@ fun BookingItemOnGoing(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .padding(
-                vertical = 8.dp,
-                horizontal = 12.dp
-            )
-            .shadow(
-                elevation = 13.dp,
-                spotColor = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(8.dp),
-            )
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                MaterialTheme.colorScheme.tertiary
-            )
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+    AnimatedVisibility(
+        visible = visibility.value,
+        enter = slideInHorizontally() + fadeIn()
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(5f)
-                    .padding(12.dp)
-                    .fillMaxHeight()
-                    .clip(RoundedCornerShape(16.dp)),
-            ) {
-                AsyncImage(
-                    model = "$BASE_URL${booking.parking.image}",
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .clip(
-                            RoundedCornerShape(16.dp)
-                        ),
+        Column(
+            modifier = Modifier
+                .padding(
+                    vertical = 8.dp,
+                    horizontal = 12.dp
                 )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(
-                modifier = Modifier
-                    .weight(6f)
-                    .fillMaxHeight()
-                    .padding(
-                        vertical = 12.dp,
-                        horizontal = 8.dp
-                    ),
-                verticalArrangement = Arrangement.SpaceBetween
+                .shadow(
+                    elevation = 13.dp,
+                    spotColor = MaterialTheme.colorScheme.primary,
+                    shape = RoundedCornerShape(8.dp),
+                )
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    MaterialTheme.colorScheme.tertiary
+                )
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row {
-                    Text(
-                        text = booking.parking.name,
-                        fontWeight = FontWeight.SemiBold,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                    )
-                }
-                Row {
-                    Text(
-                        text = booking.parking.exactLocationDetails,
-                        fontWeight = FontWeight.Medium,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 14.sp,
-                        maxLines = 1,
-                        color = blackColor.copy(alpha = 0.6f)
+                Box(
+                    modifier = Modifier
+                        .weight(5f)
+                        .padding(12.dp)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(16.dp)),
+                ) {
+                    AsyncImage(
+                        model = "$BASE_URL${booking.parking.image}",
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(
+                                RoundedCornerShape(16.dp)
+                            ),
                     )
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(6f)
+                        .fillMaxHeight()
+                        .padding(
+                            vertical = 12.dp,
+                            horizontal = 8.dp
+                        ),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
+                    Row {
+                        Text(
+                            text = booking.parking.name,
+                            fontWeight = FontWeight.SemiBold,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 16.sp,
+                            maxLines = 1,
+                        )
+                    }
+                    Row {
+                        Text(
+                            text = booking.parking.exactLocationDetails,
+                            fontWeight = FontWeight.Medium,
+                            overflow = TextOverflow.Ellipsis,
+                            fontSize = 14.sp,
+                            maxLines = 1,
+                            color = blackColor.copy(alpha = 0.6f)
+                        )
+                    }
+
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "$" + booking.totalPrice.toString(),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            Text(
+                                text = " per hour",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 10.sp,
+                                color = blackColor.copy(alpha = 0.4f)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .border(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.primary,
+                                width = 1.dp
+                            )
+                            .padding(horizontal = 12.dp, vertical = 2.dp)
                     ) {
                         Text(
-                            text = "$" + booking.totalPrice.toString(),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        Text(
-                            text = " per hour",
-                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.offset(x = 0.dp, y = 1.dp),
+                            text = booking.status.toString(),
                             fontSize = 10.sp,
-                            color = blackColor.copy(alpha = 0.4f)
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextButton(
+                    onClick = {
+                        showBottomSheetForCancel.value = true
+
+                    },
+                    shape = CircleShape,
                     modifier = Modifier
-                        .border(
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.primary,
-                            width = 1.dp
-                        )
-                        .padding(horizontal = 12.dp, vertical = 2.dp)
+                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                        .weight(1f),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                 ) {
                     Text(
-                        modifier = Modifier.offset(x = 0.dp, y = 1.dp),
-                        text = booking.status.toString(),
-                        fontSize = 10.sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.primary
+                        text = "Cancel Booking",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            TextButton(
-                onClick = {
-                    showBottomSheetForCancel.value = true
-
-                },
-                shape = CircleShape,
-                modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 5.dp)
-                    .weight(1f),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-            ) {
-                Text(
-                    text = "Cancel Booking",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-            TextButton(
-                onClick = {
-                    showBottomSheetForBooking.value = true
-                },
-                shape = CircleShape,
-                modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 5.dp)
-                    .weight(1f),
-                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(
-                    text = "View Ticket",
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                TextButton(
+                    onClick = {
+                        showBottomSheetForBooking.value = true
+                    },
+                    shape = CircleShape,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 5.dp)
+                        .weight(1f),
+                    border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text(
+                        text = "View Ticket",
+                        color = Color.White,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }

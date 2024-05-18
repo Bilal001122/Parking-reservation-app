@@ -174,7 +174,7 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
             CustomButton(
                 text = "Sign in",
                 modifier = Modifier.fillMaxWidth(),
-                padding = 16.dp,
+                padding = 12.dp,
                 fontWeight = FontWeight.Medium
             ) {
                 when {

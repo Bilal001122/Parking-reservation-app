@@ -64,10 +64,10 @@ fun Navigation(
             MapScreen(navController = navController, parkingsVM = parkingsVM)
         }
         composable(Destination.Favorites.route) {
-            FavoritesScreen(navController = navController)
+            FavoritesScreen(navController = navController, parkingsVM = parkingsVM)
         }
         composable(Destination.Profile.route) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, loginVM = loginVM)
         }
         composable(Destination.Bookings.route) {
             BookingsScreen(navController = navController, reservationVM = reservationVM)
