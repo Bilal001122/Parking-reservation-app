@@ -191,26 +191,26 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
                 items(
                     bookingsListState.toList(),
                 ) { booking ->
-                        when (booking.status) {
-                            "ONGOING" ->
-                                BookingItemOnGoing(
-                                    booking = booking,
-                                    navController = navController,
-                                    reservationVM = reservationVM
-                                )
-                            "COMPLETED" ->
-                                BookingItemCompleted(
-                                    booking = booking,
-                                    navController = navController,
-                                    reservationVM = reservationVM
-                                )
+                    when (booking.status) {
+                        "ONGOING" ->
+                            BookingItemOnGoing(
+                                booking = booking,
+                                navController = navController,
+                                reservationVM = reservationVM
+                            )
+                        "COMPLETED" ->
+                            BookingItemCompleted(
+                                booking = booking,
+                                navController = navController,
+                                reservationVM = reservationVM
+                            )
 
-                            "CANCELED" ->
-                                BookingItemCanceled(
-                                    booking = booking,
-                                    navController = navController
-                                )
-                        }
+                        "CANCELED" ->
+                            BookingItemCanceled(
+                                booking = booking,
+                                navController = navController
+                            )
+                    }
 
                 }
             }

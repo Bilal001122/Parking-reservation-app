@@ -2,6 +2,7 @@ package com.example.parkirapp.presentation.screens.login
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,9 +49,12 @@ import com.example.parkirapp.presentation.navigation.Destination
 import com.example.parkirapp.presentation.shared.CustomButton
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.presentation.theme.whiteColor
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
@@ -69,7 +74,7 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
 
     val context = LocalContext.current
     val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
-
+    val scope = rememberCoroutineScope()
 
 
     Column(
@@ -219,6 +224,11 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                         putString("userId", loginVM.currentUser?.id.toString())
                     }
                 }
+                scope.launch {
+                    val fcmToken = Firebase.messaging.token.await()
+                    Log.v("FCM Token", fcmToken)
+                    // TODO: Send fcmToken to server
+                }
                 if (loginVM.showToast.value) {
                     if (loginVM.toastMessage.value != null) {
                         Toast.makeText(
@@ -266,7 +276,6 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                         .background(blackColor.copy(0.2f))
                 )
             }
-
 
             Image(
                 painter = painterResource(id = R.drawable.google),

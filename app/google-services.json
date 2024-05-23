@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "642640989811",
+    "project_id": "parkingili",
+    "storage_bucket": "parkingili.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642640989811:android:823adc6cff85b6c09da406",
+        "android_client_info": {
+          "package_name": "com.example.parkirapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWRDM5j7fmys7nh7Es-xuZki5VEBYDdRg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

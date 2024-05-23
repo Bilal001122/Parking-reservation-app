@@ -41,8 +41,10 @@ import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
 
 @Composable
-fun ParkingItem(parking: Parking, navController: NavController) {
-
+fun ParkingItem(
+    parking: Parking,
+    navController: NavController,
+) {
     Row(
         modifier = Modifier
             .padding(
@@ -70,14 +72,13 @@ fun ParkingItem(parking: Parking, navController: NavController) {
                 .padding(start = 12.dp)
                 .height(140.dp)
                 .clip(RoundedCornerShape(16.dp)),
-
             ) {
             AsyncImage(
+                modifier = Modifier
+                    .fillMaxSize(),
                 model = "${BASE_URL}${parking.image}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize(),
             )
         }
         Spacer(modifier = Modifier.width(8.dp))
@@ -131,8 +132,6 @@ fun ParkingItem(parking: Parking, navController: NavController) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
-
-
                 ) {
 //                    Row(
 //                        verticalAlignment = Alignment.CenterVertically,

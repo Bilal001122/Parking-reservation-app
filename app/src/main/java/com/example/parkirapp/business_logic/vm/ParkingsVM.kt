@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 class ParkingsVM(
     private val parkingsRepository: ParkingsRepository
 ) : ViewModel() {
-    val allParkings = mutableListOf<Parking>()
+    val allParkings = mutableStateListOf<Parking>()
     val favoriteParkings = mutableStateListOf<Parking>()
     val isLoading = mutableStateOf(false)
     val parking = mutableStateOf<Parking?>(null)

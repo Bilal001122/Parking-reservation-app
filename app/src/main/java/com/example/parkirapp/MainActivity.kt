@@ -1,6 +1,8 @@
 package com.example.parkirapp
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.example.parkirapp.business_logic.vm.LoginVM
 import com.example.parkirapp.business_logic.vm.ParkingsVM
@@ -36,6 +39,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestNotificationsPermissions()
         super.onCreate(savedInstanceState)
         setContent {
             ParkirAppTheme {
@@ -45,15 +49,27 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val pref = this.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
                     val isLoggedIn: Boolean = pref.getBoolean("isLoggedIn", false)
-                    Navigation(
-                        navController = rememberNavController(),
-                        startDestination = if (isLoggedIn) Destination.Layout else Destination.OnBoarding,
-                        reservationVM = reservationVM,
-                        registrationVM = registrationVM,
-                        loginVM = loginVM,
-                        parkingsVM = parkingsVM
-                    )
+                        Navigation(
+                            navController = rememberNavController(),
+                            startDestination = if (isLoggedIn) Destination.Layout else Destination.OnBoarding,
+                            reservationVM = reservationVM,
+                            registrationVM = registrationVM,
+                            loginVM = loginVM,
+                            parkingsVM = parkingsVM,
+                        )
                 }
+            }
+        }
+    }
+
+    private fun requestNotificationsPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val hasPermission = ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+            if (!hasPermission) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 0)
             }
         }
     }

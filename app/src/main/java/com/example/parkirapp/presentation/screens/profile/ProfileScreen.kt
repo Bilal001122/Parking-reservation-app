@@ -212,7 +212,7 @@ fun ProfileScreen(navController: NavController, loginVM: LoginVM) {
                                 pref.edit().remove("isLoggedIn").apply()
                                 pref.edit().remove("userId").apply()
                                 withContext(Dispatchers.Main) {
-                                    navController.navigate(Destination.OnBoarding.route)
+                                    navController.navigate(Destination.Login.route)
                                 }
                             }
                         },

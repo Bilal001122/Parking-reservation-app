@@ -30,7 +30,6 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.parkirapp.R
 import com.example.parkirapp.business_logic.vm.ParkingsVM
+import com.example.parkirapp.data.api.models.Parking
 import com.example.parkirapp.presentation.navigation.Destination
 import com.example.parkirapp.presentation.shared.CustomButton
 import java.text.SimpleDateFormat
@@ -51,9 +51,10 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservationScreen(parkingId: Int?, navController: NavHostController, parkingsVM: ParkingsVM) {
-    LaunchedEffect(Unit) {
-        parkingsVM.getParkingById(parkingId!!)
-    }
+    val parking: Parking = parkingsVM.allParkings.filter {
+        it.id == parkingId
+    }.first()
+
     val datePickerState = rememberDatePickerState()
     val selectedDate = datePickerState.selectedDateMillis?.let {
         convertMillisToDate(it)
@@ -210,7 +211,7 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
             ) {
                 Text(
                     text = "$${
-                        parkingsVM.parking.value!!.pricePerHour.times(
+                        parking.pricePerHour.times(
                             calculateHourDifference(
                                 enteredTime.hour,
                                 sortingTime.hour
@@ -235,21 +236,25 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                     ),
                 padding = 12.dp,
             ) {
-
-                navController.navigate(
-                    Destination.Payment.createRoute(
-                        selectedDate!!,
-                        "${enteredTime.hour}:${enteredTime.minute}",
-                        "${sortingTime.hour}:${sortingTime.minute}",
-                        parkingsVM.parking.value!!.pricePerHour.times(
-                            calculateHourDifference(
-                                enteredTime.hour,
-                                sortingTime.hour
-                            ).toDouble()
-                        ),
-                        parkingsVM.parking.value!!.id
+                if (
+                    selectedDate != null
+                ) {
+                    navController.navigate(
+                        Destination.Payment.createRoute(
+                            selectedDate,
+                            "${enteredTime.hour}:${enteredTime.minute}",
+                            "${sortingTime.hour}:${sortingTime.minute}",
+                            parking.pricePerHour.times(
+                                calculateHourDifference(
+                                    enteredTime.hour,
+                                    sortingTime.hour
+                                ).toDouble()
+                            ),
+                            parking.id
+                        )
                     )
-                )
+                }
+
             }
         }
     }

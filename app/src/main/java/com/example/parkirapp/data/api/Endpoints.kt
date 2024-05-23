@@ -86,6 +86,13 @@ data class AddParkingToFavoritesRequest(
 )
 
 interface Endpoints {
+
+    @POST("api/sendToken")
+    suspend fun sendToken(
+        @Header("Authorization") authHeader: String,
+        @Body token: String
+    ): Response<String>
+
     @POST("api/auth/signUp")
     suspend fun signUpUser(
         @Body userData: UserData,

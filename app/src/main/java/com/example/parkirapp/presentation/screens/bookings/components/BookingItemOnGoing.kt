@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -47,8 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.parkirapp.R
 import com.example.parkirapp.business_logic.vm.ReservationVM
 import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.presentation.screens.parking_details.components.ParkingField
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
 import kotlinx.coroutines.launch
@@ -253,7 +257,7 @@ fun BookingItemOnGoing(
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(5f)
+                        .weight(5.5f)
                         .padding(12.dp)
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(16.dp)),
@@ -263,7 +267,7 @@ fun BookingItemOnGoing(
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(200.dp)
                             .clip(
                                 RoundedCornerShape(16.dp)
                             ),
@@ -314,13 +318,23 @@ fun BookingItemOnGoing(
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = " per hour",
+                                text = " Total",
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 10.sp,
                                 color = blackColor.copy(alpha = 0.4f)
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ParkingField(
+                        text = booking.date,
+                        icon= Icons.Filled.DateRange,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ParkingField(
+                        text = "${booking.startHour} - ${booking.endHour}",
+                        icon2 = R.drawable.hour,
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
