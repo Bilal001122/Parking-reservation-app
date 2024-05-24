@@ -38,7 +38,6 @@ import androidx.navigation.NavController
 import com.example.parkirapp.business_logic.vm.ParkingsVM
 import com.example.parkirapp.data.api.models.Parking
 import com.example.parkirapp.presentation.screens.parkings_list.components.ParkingItem
-import com.example.parkirapp.presentation.theme.blackColor
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -73,8 +72,8 @@ fun ParkingListScreen(navController: NavController, parkingsVM: ParkingsVM) {
                     Icon(imageVector = Icons.Filled.Search, contentDescription = null)
                 },
                 colors = TextFieldDefaults.colors(
-                    disabledContainerColor = blackColor.copy(alpha = 0.04f),
-                    unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
+                    disabledContainerColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
                     focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
                     focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.7f),

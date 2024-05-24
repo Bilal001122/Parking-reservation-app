@@ -1,8 +1,5 @@
 package com.example.parkirapp.presentation.screens.bookings.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -27,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -43,8 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.parkirapp.R
 import com.example.parkirapp.business_logic.vm.ReservationVM
 import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.presentation.screens.parking_details.components.ParkingField
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
 
@@ -54,14 +54,6 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
 
     val showBottomSheetForBooking = remember {
         mutableStateOf(false)
-    }
-
-    val visibility = remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(Unit) {
-        visibility.value = true
     }
 
     val sheetForShowingTicket = rememberModalBottomSheetState()
@@ -100,10 +92,6 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
         }
     }
 
-    AnimatedVisibility(
-        visible = visibility.value,
-        enter = slideInHorizontally() + fadeIn()
-    ) {
         Column(
             modifier = Modifier
                 .padding(
@@ -128,7 +116,7 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
             ) {
                 Box(
                     modifier = Modifier
-                        .weight(5f)
+                        .weight(5.5f)
                         .padding(12.dp)
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(16.dp)),
@@ -138,14 +126,13 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(200.dp)
                             .clip(
                                 RoundedCornerShape(16.dp)
                             ),
                     )
 
                 }
-
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(
                     modifier = Modifier
@@ -189,13 +176,24 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Text(
-                                text = " per hour",
+                                text = " Total",
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 10.sp,
                                 color = blackColor.copy(alpha = 0.4f)
                             )
                         }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ParkingField(
+                        text = booking.date,
+                        icon= Icons.Filled.DateRange,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    ParkingField(
+                        text = "${booking.startHour} - ${booking.endHour}",
+                        icon2 = R.drawable.hour,
+                    )
+
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -237,5 +235,5 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                 )
             }
         }
-    }
+
 }

@@ -77,13 +77,6 @@ fun BookingItemOnGoing(
     val sheetStateForCancelBooking = rememberModalBottomSheetState()
     val sheetForShowingTicket = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
-    val visibility = remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(Unit) {
-        visibility.value = true
-    }
 
     if (
         showBottomSheetForBooking.value
@@ -229,10 +222,6 @@ fun BookingItemOnGoing(
         }
     }
 
-    AnimatedVisibility(
-        visible = visibility.value,
-        enter = slideInHorizontally() + fadeIn()
-    ) {
         Column(
             modifier = Modifier
                 .padding(
@@ -402,5 +391,5 @@ fun BookingItemOnGoing(
                 }
             }
         }
-    }
+
 }

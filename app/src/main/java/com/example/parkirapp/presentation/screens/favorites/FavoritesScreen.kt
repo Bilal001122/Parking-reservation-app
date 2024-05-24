@@ -88,8 +88,8 @@ fun FavoritesScreen(
                     Icon(imageVector = Icons.Filled.Search, contentDescription = null)
                 },
                 colors = TextFieldDefaults.colors(
-                    disabledContainerColor = blackColor.copy(alpha = 0.04f),
-                    unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
+                    disabledContainerColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.tertiary,
                     focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
                     focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.primary.copy(0.7f),
@@ -135,7 +135,6 @@ fun FavoritesScreen(
                         shape = RoundedCornerShape(8.dp)
                     )
             )
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

@@ -1,9 +1,13 @@
 package com.example.parkirapp.presentation.screens.login
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,7 +33,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +52,12 @@ import com.example.parkirapp.presentation.navigation.Destination
 import com.example.parkirapp.presentation.shared.CustomButton
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.presentation.theme.whiteColor
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.messaging
 import kotlinx.coroutines.CoroutineScope
@@ -74,8 +83,25 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
 
     val context = LocalContext.current
     val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
-    val scope = rememberCoroutineScope()
-
+    val signInRequestCode = 1
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = AuthResultContract()) {
+            try {
+                val account = it?.getResult(ApiException::class.java)
+                Log.v("Google Sign In Bilal", account.toString())
+                if (account == null) {
+                    Toast.makeText(context, "Google Sign In failed", Toast.LENGTH_SHORT).show()
+                } else {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        // TODO: Handle Google Sign In register token tto backend
+                        //onGoogleSignInCompleted(account.idToken!!)
+                    }
+                    Toast.makeText(context, "Google Sign In success", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: ApiException) {
+                Log.e("Google Sign In", "Google sign in failed", e)
+            }
+        }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -223,11 +249,15 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                         putString("token", loginVM.token.value)
                         putString("userId", loginVM.currentUser?.id.toString())
                     }
-                }
-                scope.launch {
-                    val fcmToken = Firebase.messaging.token.await()
-                    Log.v("FCM Token", fcmToken)
-                    // TODO: Send fcmToken to server
+                    val storedFcmToken = pref.getString("fcmToken", null)
+                    if (storedFcmToken == null) {
+                        val fcmToken = Firebase.messaging.token.await()
+                        pref.edit {
+                            putString("fcmToken", fcmToken)
+                        }
+                        Log.v("FCM Token", fcmToken)
+                        // TODO: Send fcmToken to server
+                    }
                 }
                 if (loginVM.showToast.value) {
                     if (loginVM.toastMessage.value != null) {
@@ -286,11 +316,20 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                         shape = RoundedCornerShape(12.dp),
                         color = blackColor.copy(0.2f)
                     )
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable {
+                        getGoogleSignInClient(context).signOut().addOnCompleteListener {
+                            authResultLauncher.launch(signInRequestCode)
+                        }
+                    }
                     .padding(horizontal = 24.dp, vertical = 15.dp)
                     .size(20.dp),
             )
 
-            Row {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
                 Text(
                     text = "Dont' have an account? ",
                     color = blackColor,
@@ -301,11 +340,32 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.clickable {
+                    modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable {
                         navController.navigate(Destination.SignUp.route)
-                    })
+                    }.padding(4.dp))
             }
             Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
+}
+
+fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        //.requestIdToken(CLIENT_ID) // Request id token if you intend to verify google user from your backend server
+        .requestEmail()
+        .build()
+
+    return GoogleSignIn.getClient(context, signInOptions)
+}
+
+class AuthResultContract : ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
+    override fun createIntent(context: Context, input: Int): Intent =
+        getGoogleSignInClient(context).signInIntent.putExtra("input", input)
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
+        return when (resultCode) {
+            Activity.RESULT_OK -> GoogleSignIn.getSignedInAccountFromIntent(intent)
+            else -> null
         }
     }
 }
