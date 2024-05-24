@@ -7,9 +7,12 @@ import com.example.parkirapp.data.api.GetFavoriteParkingsResponse
 import com.example.parkirapp.data.api.RemoveFavoriteParkingRequest
 import com.example.parkirapp.data.api.RemoveParkingFromFavoritesResponse
 import com.example.parkirapp.data.api.models.Parking
+import com.example.parkirapp.data.database.daos.ParkingDao
 import retrofit2.Response
 
-class ParkingsRepository {
+class ParkingsRepository(
+    private val parkingDao: ParkingDao
+) {
     suspend fun getAllParkings(
     ): Response<List<Parking>> {
         return Endpoints.createEndpoint().getParkings()
@@ -42,4 +45,16 @@ class ParkingsRepository {
     ): Response<GetFavoriteParkingsResponse> {
         return Endpoints.createEndpoint().getFavoriteParkings(authHeader)
     }
+    suspend fun getAllParking(): List<com.example.parkirapp.data.database.entities.Parking> {
+        return parkingDao.getAllParkings()
+    }
+
+    suspend fun insertParking(parking: com.example.parkirapp.data.database.entities.Parking) {
+        parkingDao.insertParking(parking)
+    }
+
+    suspend fun saveParkings(parkings: List<com.example.parkirapp.data.database.entities.Parking>) {
+        parkingDao.insertParkings(parkings)
+    }
+
 }

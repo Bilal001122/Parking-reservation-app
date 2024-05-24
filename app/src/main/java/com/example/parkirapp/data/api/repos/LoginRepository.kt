@@ -1,6 +1,7 @@
 package com.example.parkirapp.data.api.repos
 
 import com.example.parkirapp.data.api.Endpoints
+import com.example.parkirapp.data.api.RegisterTokenRequest
 import com.example.parkirapp.data.api.UserLogin
 import com.example.parkirapp.data.api.UserResponse
 import com.example.parkirapp.data.api.UserResponseLogin
@@ -19,5 +20,13 @@ class LoginRepository {
         authHeader: String
     ): Response<UserResponse> {
         return Endpoints.createEndpoint().getUserInformation(authHeader)
+    }
+
+    suspend fun registerToken(
+        authHeader: String,
+        token: String
+    ): Response<String> {
+        val registerTokenRequest: RegisterTokenRequest = RegisterTokenRequest(token)
+        return Endpoints.createEndpoint().registerToken(authHeader, registerTokenRequest)
     }
 }

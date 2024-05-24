@@ -6,9 +6,14 @@ import com.example.parkirapp.data.api.CompleteBookingRequest
 import com.example.parkirapp.data.api.CreateBookingRequest
 import com.example.parkirapp.data.api.Endpoints
 import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.data.database.daos.ParkingDao
+import com.example.parkirapp.data.database.daos.ReservationDao
+import com.example.parkirapp.data.database.daos.ReservationWithParking
 import retrofit2.Response
 
 class ReservationRepository(
+    private val reservationDao: ReservationDao,
+    private val parkingDao: ParkingDao
 ) {
     suspend fun getUserBookings(authHeader: String): Response<List<Reservation>> {
         return Endpoints.createEndpoint().getUserBookings(authHeader)
@@ -43,5 +48,33 @@ class ReservationRepository(
         )
         return Endpoints.createEndpoint()
             .createBooking(authHeader, createBookingRequest)
+    }
+
+    fun saveReservation(reservation: com.example.parkirapp.data.database.entities.Reservation) {
+        reservationDao.insertReservation(reservation)
+    }
+
+    fun deleteReservation(reservation: com.example.parkirapp.data.database.entities.Reservation) {
+        reservationDao.deleteReservation(reservation)
+    }
+
+    fun getReservations(): List<ReservationWithParking> {
+        return reservationDao.getAllReservationsWithParking()
+    }
+
+    fun getReservationById(id: Int): com.example.parkirapp.data.database.entities.Reservation {
+        return reservationDao.getReservationById(id)
+    }
+
+    fun countReservations(): Int {
+        return reservationDao.getReservationCount()
+    }
+
+    fun saveReservations(reservations: List<com.example.parkirapp.data.database.entities.Reservation>) {
+        reservationDao.insertReservations(reservations)
+    }
+
+    fun updateReservation(reservationId : Int, newStatus : String) {
+        reservationDao.updateReservation(reservationId, newStatus)
     }
 }

@@ -43,14 +43,16 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.parkirapp.R
 import com.example.parkirapp.business_logic.vm.ReservationVM
-import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.data.database.daos.ReservationWithParking
 import com.example.parkirapp.presentation.screens.parking_details.components.ParkingField
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookingItemCompleted(booking: Reservation, navController: NavController,reservationVM: ReservationVM) {
+fun BookingItemCompleted(
+    booking: ReservationWithParking, navController: NavController,
+    reservationVM: ReservationVM) {
 
     val showBottomSheetForBooking = remember {
         mutableStateOf(false)
@@ -122,7 +124,7 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                         .clip(RoundedCornerShape(16.dp)),
                 ) {
                     AsyncImage(
-                        model = "$BASE_URL${booking.parking.image}",
+                        model = "$BASE_URL${booking.image}",
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -146,7 +148,7 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                 ) {
                     Row {
                         Text(
-                            text = booking.parking.name,
+                            text = booking.name,
                             fontWeight = FontWeight.SemiBold,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 16.sp,
@@ -155,7 +157,7 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                     }
                     Row {
                         Text(
-                            text = booking.parking.exactLocationDetails,
+                            text = booking.exactLocationDetails,
                             fontWeight = FontWeight.Medium,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 14.sp,
@@ -235,5 +237,4 @@ fun BookingItemCompleted(booking: Reservation, navController: NavController,rese
                 )
             }
         }
-
 }

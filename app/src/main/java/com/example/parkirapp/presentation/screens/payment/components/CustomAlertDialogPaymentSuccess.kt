@@ -60,11 +60,11 @@ fun CustomAlertDialogPaymentSuccess(navController: NavController) {
         },
         confirmButton = {
             CustomButton(
-                text = "Go to Homepage", modifier = Modifier.fillMaxWidth(),
+                text = "Go to Bookings", modifier = Modifier.fillMaxWidth(),
                 padding = 12.dp,
                 fontWeight = FontWeight.Medium
             ) {
-                navController.navigate(Destination.Layout.route)
+                navController.navigate(Destination.Bookings.route)
             }
         },
     )

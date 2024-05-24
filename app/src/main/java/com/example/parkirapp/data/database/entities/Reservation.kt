@@ -3,7 +3,6 @@ package com.example.parkirapp.data.database.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.example.parkirapp.data.database.entities.Parking
 
 @Entity(
     tableName = "reservation",
@@ -14,8 +13,17 @@ import com.example.parkirapp.data.database.entities.Parking
     )],
 )
 data class Reservation(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val price: Double,
-    val parkingId: Int,
+    @PrimaryKey
+    val id: Int,
+    val userId : Int,
+    val startHour: String,
+    val endHour: String,
+    val status: String,
+    val placeNumber: Int,
+    val qrCode : String,
+    val totalPrice: Double,
+    val date : String,
+    val parkingId : Int,
+    val updatedAt: String?,
+    val createdAt: String?
 )

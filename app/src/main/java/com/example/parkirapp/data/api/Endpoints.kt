@@ -85,6 +85,10 @@ data class AddParkingToFavoritesRequest(
     val parkingId: Int
 )
 
+data class RegisterTokenRequest(
+    val token: String
+)
+
 interface Endpoints {
 
     @POST("api/sendToken")
@@ -148,6 +152,12 @@ interface Endpoints {
 
     @GET("api/parking/favorites")
     suspend fun getFavoriteParkings(@Header("Authorization") authHeader: String): Response<GetFavoriteParkingsResponse>
+
+    @POST("api/firebase/registerToken")
+    suspend fun registerToken(
+        @Header("Authorization") authHeader: String,
+        @Body registerTokenRequest: RegisterTokenRequest
+    ): Response<String>
 
     companion object {
         var endpoint: Endpoints? = null

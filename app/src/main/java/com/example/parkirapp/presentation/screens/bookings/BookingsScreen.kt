@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.parkirapp.business_logic.vm.ReservationVM
-import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.data.database.daos.ReservationWithParking
 import com.example.parkirapp.presentation.screens.bookings.components.BookingItemCanceled
 import com.example.parkirapp.presentation.screens.bookings.components.BookingItemCompleted
 import com.example.parkirapp.presentation.screens.bookings.components.BookingItemOnGoing
@@ -71,9 +71,9 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
         }
     } else {
         val bookingsListState = remember {
-            mutableStateListOf<Reservation>(
+            mutableStateListOf<ReservationWithParking>(
             ).apply {
-                addAll(reservationVM.allReservations.filter {
+                addAll(reservationVM.allReservationWithoutConnexion.filter {
                     it.status == "ONGOING"
                 })
             }
@@ -99,7 +99,7 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
                         completedState.value = false
                         bookingsListState.clear()
                         bookingsListState.addAll(
-                            reservationVM.allReservations.filter {
+                            reservationVM.allReservationWithoutConnexion.filter {
                                 it.status == "ONGOING"
                             }
                         )
@@ -128,7 +128,7 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
                         completedState.value = true
                         bookingsListState.clear()
                         bookingsListState.addAll(
-                            reservationVM.allReservations.filter {
+                            reservationVM.allReservationWithoutConnexion.filter {
                                 it.status == "COMPLETED"
                             }
                         )
@@ -157,7 +157,7 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
                         completedState.value = false
                         bookingsListState.clear()
                         bookingsListState.addAll(
-                            reservationVM.allReservations.filter {
+                            reservationVM.allReservationWithoutConnexion.filter {
                                 it.status == "CANCELED"
                             }
                         )

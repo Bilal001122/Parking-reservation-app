@@ -34,13 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.parkirapp.R
-import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.data.database.daos.ReservationWithParking
 import com.example.parkirapp.presentation.screens.parking_details.components.ParkingField
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
 
 @Composable
-fun BookingItemCanceled(booking: Reservation, navController: NavController) {
+fun BookingItemCanceled(booking: ReservationWithParking, navController: NavController) {
     Row(
         modifier = Modifier
             .padding(
@@ -67,7 +67,7 @@ fun BookingItemCanceled(booking: Reservation, navController: NavController) {
                 .clip(RoundedCornerShape(16.dp)),
         ) {
             AsyncImage(
-                model = "$BASE_URL${booking.parking.image}",
+                model = "$BASE_URL${booking.image}",
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -90,7 +90,7 @@ fun BookingItemCanceled(booking: Reservation, navController: NavController) {
         ) {
             Row {
                 Text(
-                    text = booking.parking.name,
+                    text = booking.name,
                     fontWeight = FontWeight.SemiBold,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 16.sp,
@@ -99,7 +99,7 @@ fun BookingItemCanceled(booking: Reservation, navController: NavController) {
             }
             Row {
                 Text(
-                    text = booking.parking.exactLocationDetails,
+                    text = booking.exactLocationDetails,
                     fontWeight = FontWeight.Medium,
                     overflow = TextOverflow.Ellipsis,
                     fontSize = 14.sp,

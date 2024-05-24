@@ -70,6 +70,18 @@ class LoginVM(
         }
     }
 
+    fun registerToken(authHeader: String, token: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = loginRepository.registerToken(authHeader, token)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
+
     class Factory(private val loginRepository: LoginRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return LoginVM(loginRepository) as T

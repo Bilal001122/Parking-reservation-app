@@ -52,6 +52,7 @@ import com.example.parkirapp.presentation.navigation.Destination
 import com.example.parkirapp.presentation.shared.CustomButton
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.presentation.theme.whiteColor
+import com.example.parkirapp.utils.CLIENT_ID
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -65,7 +66,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-@SuppressLint("CoroutineCreationDuringComposition")
+@SuppressLint("CoroutineCreationDuringComposition", "SuspiciousIndentation")
 @Composable
 fun LoginScreen(navController: NavController, loginVM: LoginVM) {
 
@@ -84,24 +85,26 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
     val context = LocalContext.current
     val pref = context.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
     val signInRequestCode = 1
-    val authResultLauncher =
-        rememberLauncherForActivityResult(contract = AuthResultContract()) {
-            try {
-                val account = it?.getResult(ApiException::class.java)
-                Log.v("Google Sign In Bilal", account.toString())
-                if (account == null) {
-                    Toast.makeText(context, "Google Sign In failed", Toast.LENGTH_SHORT).show()
-                } else {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        // TODO: Handle Google Sign In register token tto backend
-                        //onGoogleSignInCompleted(account.idToken!!)
-                    }
-                    Toast.makeText(context, "Google Sign In success", Toast.LENGTH_SHORT).show()
+    val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResultContract()) {
+        try {
+            val account = it?.getResult(ApiException::class.java)
+            Log.v("Google Sign In Bilal", account.toString())
+            if (account == null) {
+                Toast.makeText(context, "Google Sign In failed", Toast.LENGTH_SHORT).show()
+            } else {
+                CoroutineScope(Dispatchers.IO).launch {
+                if(account.idToken != null)
+                    Log.v("Google Sign In Bilal", account.idToken.toString())
+                    Log.v("Google Sign In Bilal", account.email.toString())
+                // TODO: Handle Google Sign In register token tto backend
+                    //onGoogleSignInCompleted(account.idToken!!)
                 }
-            } catch (e: ApiException) {
-                Log.e("Google Sign In", "Google sign in failed", e)
+                Toast.makeText(context, "Google Sign In success", Toast.LENGTH_SHORT).show()
             }
+        } catch (e: ApiException) {
+            Log.e("Google Sign In", "Google sign in failed", e)
         }
+    }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -109,7 +112,6 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp)
-
     ) {
         Column(
             modifier = Modifier
@@ -117,8 +119,6 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
-
-
             ) {
             Text(
                 text = "Login to your\nAccount",
@@ -242,7 +242,6 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                     launchSingleTop = true
                     restoreState = true
                 }
-
                 CoroutineScope(Dispatchers.IO).launch {
                     pref.edit {
                         putBoolean("isLoggedIn", true)
@@ -256,7 +255,10 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                             putString("fcmToken", fcmToken)
                         }
                         Log.v("FCM Token", fcmToken)
-                        // TODO: Send fcmToken to server
+                        val authToken = pref.getString("token", null)
+                        if (authToken != null) {
+                            loginVM.registerToken(authToken, fcmToken)
+                        }
                     }
                 }
                 if (loginVM.showToast.value) {
@@ -318,9 +320,11 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                     )
                     .clip(RoundedCornerShape(12.dp))
                     .clickable {
-                        getGoogleSignInClient(context).signOut().addOnCompleteListener {
-                            authResultLauncher.launch(signInRequestCode)
-                        }
+                        getGoogleSignInClient(context)
+                            .signOut()
+                            .addOnCompleteListener {
+                                authResultLauncher.launch(signInRequestCode)
+                            }
                     }
                     .padding(horizontal = 24.dp, vertical = 15.dp)
                     .size(20.dp),
@@ -340,9 +344,12 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable {
-                        navController.navigate(Destination.SignUp.route)
-                    }.padding(4.dp))
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable {
+                            navController.navigate(Destination.SignUp.route)
+                        }
+                        .padding(4.dp))
             }
             Spacer(modifier = Modifier.height(10.dp))
         }
@@ -351,8 +358,8 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
 
 fun getGoogleSignInClient(context: Context): GoogleSignInClient {
     val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        //.requestIdToken(CLIENT_ID) // Request id token if you intend to verify google user from your backend server
         .requestEmail()
+        .requestIdToken(CLIENT_ID) // Request id token if you intend to verify google user from your backend server
         .build()
 
     return GoogleSignIn.getClient(context, signInOptions)

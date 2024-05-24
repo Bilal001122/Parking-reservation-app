@@ -1,9 +1,6 @@
 package com.example.parkirapp.presentation.screens.bookings.components
 
 import android.content.Context
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -51,7 +47,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.parkirapp.R
 import com.example.parkirapp.business_logic.vm.ReservationVM
-import com.example.parkirapp.data.api.models.Reservation
+import com.example.parkirapp.data.database.daos.ReservationWithParking
 import com.example.parkirapp.presentation.screens.parking_details.components.ParkingField
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
@@ -60,7 +56,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookingItemOnGoing(
-    booking: Reservation,
+    booking: ReservationWithParking,
     navController: NavController,
     reservationVM: ReservationVM
 ) {
@@ -119,7 +115,7 @@ fun BookingItemOnGoing(
                         if (authHeader != null) {
                             reservationVM.completeReservation(
                                 authHeader = authHeader,
-                                bookingId = booking.id
+                                bookingId = booking.reservationId
                             )
                         }
                     }) {
@@ -202,7 +198,7 @@ fun BookingItemOnGoing(
                             if (authHeader != null) {
                                 reservationVM.cancelReservation(
                                     authHeader = authHeader,
-                                    bookingId = booking.id
+                                    bookingId = booking.reservationId
                                 )
                             }
                             sheetStateForCancelBooking.hide()
@@ -252,7 +248,7 @@ fun BookingItemOnGoing(
                         .clip(RoundedCornerShape(16.dp)),
                 ) {
                     AsyncImage(
-                        model = "$BASE_URL${booking.parking.image}",
+                        model = "$BASE_URL${booking.image}",
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -276,7 +272,7 @@ fun BookingItemOnGoing(
                 ) {
                     Row {
                         Text(
-                            text = booking.parking.name,
+                            text = booking.name,
                             fontWeight = FontWeight.SemiBold,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 16.sp,
@@ -285,7 +281,7 @@ fun BookingItemOnGoing(
                     }
                     Row {
                         Text(
-                            text = booking.parking.exactLocationDetails,
+                            text = booking.exactLocationDetails,
                             fontWeight = FontWeight.Medium,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 14.sp,

@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import com.example.parkirapp.business_logic.vm.ReservationVM
 import com.example.parkirapp.presentation.screens.payment.components.CardDetails
 
-
 @Composable
 fun PaymentScreen(
     date: String?,

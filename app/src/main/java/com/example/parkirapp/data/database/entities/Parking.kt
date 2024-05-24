@@ -5,10 +5,19 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "parking")
 data class Parking (
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Int,
+    val allocatedPlaces: Int,
+    val maxCapacity: Int,
     val name: String,
-    val address: String,
-    val price: Double,
-    val image: String
+    val exactLocationDetails: String,
+    val longitude: Double,
+    val latitude: Double,
+    val pricePerHour: Double,
+    val description: String,
+    val openAt: String,
+    val closingAt: String,
+    val image: String,
+    val updatedAt: String?,
+    val createdAt: String?
 )

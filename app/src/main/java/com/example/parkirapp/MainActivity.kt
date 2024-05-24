@@ -1,5 +1,6 @@
 package com.example.parkirapp
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
@@ -23,7 +24,8 @@ import com.example.parkirapp.presentation.theme.ParkirAppTheme
 
 class MainActivity : ComponentActivity() {
     private val reservationVM: ReservationVM by lazy {
-        ReservationVM((application as MyApplication).reservationRepository)
+        ReservationVM((application as MyApplication).reservationRepository,
+            (application as MyApplication).parkingsRepository)
     }
 
     private val registrationVM: RegistrationVM by viewModels {
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
         ParkingsVM.Factory((application as MyApplication).parkingsRepository)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         requestNotificationsPermissions()
         super.onCreate(savedInstanceState)

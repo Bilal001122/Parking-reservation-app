@@ -11,8 +11,9 @@ import com.example.parkirapp.data.database.entities.Reservation
 
 @Database(entities = [Reservation::class, Parking::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
+    abstract fun getReservationsDao(): ReservationDao
+
     abstract fun getParkingDao(): ParkingDao
-    abstract fun getReservationDao(): ReservationDao
     companion object {
         private var INSTANCE: AppDatabase? = null
         fun buildDatabase(context: Context): AppDatabase {

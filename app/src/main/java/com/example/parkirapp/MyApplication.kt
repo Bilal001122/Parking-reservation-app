@@ -14,11 +14,15 @@ class MyApplication : Application() {
     }
 
     private val reservationDao by lazy {
-        dataBase.getReservationDao()
+        dataBase.getReservationsDao()
+    }
+
+    private val parkingDao by lazy {
+        dataBase.getParkingDao()
     }
 
     val reservationRepository by lazy {
-        ReservationRepository()
+        ReservationRepository(reservationDao,parkingDao)
     }
 
     val registrationRepository by lazy {
@@ -30,6 +34,6 @@ class MyApplication : Application() {
     }
 
     val parkingsRepository by lazy {
-        ParkingsRepository()
+        ParkingsRepository(parkingDao)
     }
 }
