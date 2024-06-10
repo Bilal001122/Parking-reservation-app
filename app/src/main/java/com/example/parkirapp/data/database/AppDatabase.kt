@@ -9,7 +9,7 @@ import com.example.parkirapp.data.database.daos.ReservationDao
 import com.example.parkirapp.data.database.entities.Parking
 import com.example.parkirapp.data.database.entities.Reservation
 
-@Database(entities = [Reservation::class, Parking::class], version = 1)
+@Database(entities = [Reservation::class, Parking::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun getReservationsDao(): ReservationDao
 

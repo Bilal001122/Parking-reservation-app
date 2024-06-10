@@ -211,11 +211,8 @@ fun BookingsScreen(navController: NavController, reservationVM: ReservationVM) {
                                 navController = navController
                             )
                     }
-
                 }
             }
-
-
         }
     }
 }

@@ -17,6 +17,8 @@ class ParkingsVM(
     val allParkings = mutableStateListOf<Parking>()
     val favoriteParkings = mutableStateListOf<Parking>()
     val isLoading = mutableStateOf(false)
+    val isFavoriteLoading = mutableStateOf(false)
+    val filteredParkings = mutableStateListOf<Parking>()
     val parking = mutableStateOf<Parking?>(null)
 
     fun getAllParkings() {
@@ -59,16 +61,18 @@ class ParkingsVM(
     fun getFavoriteParkings(authHeader: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                isLoading.value = true
+                isFavoriteLoading.value = true
                 try {
                     val response = parkingsRepository.getFavoriteParkings(authHeader)
                     if (response.isSuccessful) {
-                        isLoading.value = false
                         favoriteParkings.clear()
+                        filteredParkings.clear()
+                        filteredParkings.addAll(response.body()!!.favorites)
                         favoriteParkings.addAll(response.body()!!.favorites)
+                        isFavoriteLoading.value = false
                     }
                 } catch (e: Exception) {
-                    isLoading.value = false
+                    isFavoriteLoading.value = false
                     e.printStackTrace()
                 }
             }
@@ -110,6 +114,14 @@ class ParkingsVM(
                     isLoading.value = false
                     e.printStackTrace()
                 }
+            }
+        }
+    }
+
+    fun removeParkingsFromDatabase() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                parkingsRepository.deleteAllParkings()
             }
         }
     }

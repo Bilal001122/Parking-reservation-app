@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,9 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.parkirapp.business_logic.vm.ParkingsVM
-import com.example.parkirapp.data.api.models.Parking
 import com.example.parkirapp.presentation.screens.parkings_list.components.ParkingItem
-import com.example.parkirapp.presentation.theme.blackColor
 
 @Composable
 fun FavoritesScreen(
@@ -48,22 +45,21 @@ fun FavoritesScreen(
 ) {
 
     val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+//    val filteredParkings = remember {
+//        mutableStateListOf<Parking>()
+//    }
+
+    val searchField = remember {
+        mutableStateOf("")
+    }
+
     LaunchedEffect(Unit) {
         pref.getString("token", null)?.let {
             parkingsVM.getFavoriteParkings(it)
         }
     }
-    val searchField = remember {
-        mutableStateOf("")
-    }
 
-    val filteredParkings = remember {
-        mutableStateListOf<Parking>().apply {
-            addAll(parkingsVM.favoriteParkings)
-        }
-    }
-
-    if (parkingsVM.isLoading.value) {
+    if (parkingsVM.isFavoriteLoading.value) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,7 +67,6 @@ fun FavoritesScreen(
         ) {
             CircularProgressIndicator()
         }
-
     } else {
         Column {
             OutlinedTextField(
@@ -100,8 +95,8 @@ fun FavoritesScreen(
                 ),
                 onValueChange = { newValue: String ->
                     searchField.value = newValue
-                    filteredParkings.clear()
-                    filteredParkings.addAll(
+                    parkingsVM.filteredParkings.clear()
+                    parkingsVM.filteredParkings.addAll(
                         if (newValue.isEmpty()) {
                             parkingsVM.favoriteParkings
                         } else {
@@ -129,7 +124,8 @@ fun FavoritesScreen(
                         end = 12.dp,
                         bottom = 4.dp
                     )
-                    .fillMaxWidth().border(
+                    .fillMaxWidth()
+                    .border(
                         width = 2.dp,
                         color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(8.dp)
@@ -143,7 +139,7 @@ fun FavoritesScreen(
                     )
             ) {
                 items(
-                    filteredParkings
+                    parkingsVM.filteredParkings
                 ) { parking ->
                     ParkingItem(
                         parking = parking,

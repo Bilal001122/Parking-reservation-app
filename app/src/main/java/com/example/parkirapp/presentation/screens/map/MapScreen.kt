@@ -1,5 +1,6 @@
 package com.example.parkirapp.presentation.screens.map
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -44,12 +45,15 @@ import com.example.parkirapp.presentation.navigation.Destination
 import com.example.parkirapp.presentation.shared.CustomButton
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerInfoWindowContent
 import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
+
 
 @Composable
 fun MapScreen(navController: NavController, parkingsVM: ParkingsVM) {
@@ -58,17 +62,23 @@ fun MapScreen(navController: NavController, parkingsVM: ParkingsVM) {
         parkingsVM.getAllParkings()
     }
 
-    val uiSettings = remember { MapUiSettings(zoomControlsEnabled = false) }
+    val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
+
+    val uiSettings = remember {
+        MapUiSettings(
+            zoomControlsEnabled = true,
+        )
+    }
 
     if (parkingsVM.isLoading.value) {
-        Column (
+        Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        ){
+        ) {
             CircularProgressIndicator()
         }
-    } else  {
+    } else {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -78,6 +88,11 @@ fun MapScreen(navController: NavController, parkingsVM: ParkingsVM) {
                 uiSettings = uiSettings,
                 modifier = Modifier.fillMaxSize(),
                 onMapLongClick = {},
+                cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(
+                        LatLng(36.7590468, 3.0532464), 12f
+                    )
+                },
             ) {
                 for (parking in parkingsVM.allParkings) {
                     Marker(
@@ -188,13 +203,11 @@ fun MapScreen(navController: NavController, parkingsVM: ParkingsVM) {
                                     padding = 12.dp,
                                     fontSize = 12.sp
                                 ) {
-
                                 }
                             }
                         }
                     }
                 }
-
             }
         }
     }

@@ -16,7 +16,7 @@ class ReservationVM(
     private val reservationRepository: ReservationRepository,
     private val parkingRepository: ParkingsRepository
 ) : ViewModel() {
-    val isLoading = mutableStateOf(false)
+    val isLoading = mutableStateOf(true)
     val allReservationWithoutConnexion = mutableStateListOf<ReservationWithParking>()
 
     fun getAllReservations(authHeader: String) {
@@ -24,16 +24,15 @@ class ReservationVM(
             withContext(Dispatchers.IO) {
                 isLoading.value = true
                 if(reservationRepository.countReservations() > 0) {
-                    isLoading.value = false
                     allReservationWithoutConnexion.clear()
                     allReservationWithoutConnexion.addAll(reservationRepository.getReservations())
+                    isLoading.value = false
                 }
                 else {
                     try {
                         val response = reservationRepository.getUserBookings(authHeader)
                         val parkingResponse = parkingRepository.getAllParkings()
                         if (response.isSuccessful && parkingResponse.isSuccessful) {
-                            isLoading.value = false
                             parkingRepository.saveParkings(
                                 parkingResponse.body()!!.map {
                                     com.example.parkirapp.data.database.entities.Parking(
@@ -74,6 +73,7 @@ class ReservationVM(
                             )
                             allReservationWithoutConnexion.clear()
                             allReservationWithoutConnexion.addAll(reservationRepository.getReservations())
+                            isLoading.value = false
                         }
                     } catch (e: Exception) {
                         isLoading.value = false
@@ -177,6 +177,13 @@ class ReservationVM(
         }
     }
 
+    fun deleteAllReservations() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                reservationRepository.deleteAllReservations()
+            }
+        }
+    }
 
     class Factory(
         private val reservationRepository: ReservationRepository,

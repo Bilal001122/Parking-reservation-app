@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,6 +42,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -93,11 +96,10 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                 Toast.makeText(context, "Google Sign In failed", Toast.LENGTH_SHORT).show()
             } else {
                 CoroutineScope(Dispatchers.IO).launch {
-                if(account.idToken != null)
-                    Log.v("Google Sign In Bilal", account.idToken.toString())
-                    Log.v("Google Sign In Bilal", account.email.toString())
-                // TODO: Handle Google Sign In register token tto backend
-                    //onGoogleSignInCompleted(account.idToken!!)
+                    if (account.idToken != null) {
+                        Log.v("Google Sign In Bilal", account.idToken.toString())
+                        loginVM.loginWithGoogle(account.idToken!!.toString())
+                    }
                 }
                 Toast.makeText(context, "Google Sign In success", Toast.LENGTH_SHORT).show()
             }
@@ -119,7 +121,7 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start,
-            ) {
+        ) {
             Text(
                 text = "Login to your\nAccount",
                 fontWeight = FontWeight.SemiBold,
@@ -145,37 +147,47 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                 focusedIndicatorColor = MaterialTheme.colorScheme.primary,
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = MaterialTheme.colorScheme.primary,
-            ), leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.email), contentDescription = null
-                )
-            }, onValueChange = { newValue: String ->
-                emailFieldValue.value = newValue
-            }, placeholder = {
-                Text(text = "Email", fontSize = 14.sp, textAlign = TextAlign.Center)
-            }, modifier = Modifier.fillMaxWidth()
+            ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email
+                ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.email), contentDescription = null
+                    )
+                }, onValueChange = { newValue: String ->
+                    emailFieldValue.value = newValue
+                }, placeholder = {
+                    Text(text = "Email", fontSize = 14.sp, textAlign = TextAlign.Center)
+                }, modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
-            OutlinedTextField(value = passwordFieldValue.value, maxLines = 1, textStyle = TextStyle(
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                color = Color.Black,
-            ), shape = RoundedCornerShape(
-                size = 10.dp,
-            ), colors = TextFieldDefaults.colors(
-                disabledContainerColor = blackColor.copy(alpha = 0.04f),
-                unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
-                focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.primary,
-            ), leadingIcon = {
-                Icon(painter = painterResource(id = R.drawable.lock), contentDescription = null)
-            }, onValueChange = { newValue: String ->
-                passwordFieldValue.value = newValue
-            }, placeholder = {
-                Text(text = "Password", fontSize = 14.sp, textAlign = TextAlign.Center)
-            }, modifier = Modifier.fillMaxWidth()
+            OutlinedTextField(value = passwordFieldValue.value, maxLines = 1,
+                textStyle = TextStyle(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                ), shape = RoundedCornerShape(
+                    size = 10.dp,
+                ), colors = TextFieldDefaults.colors(
+                    disabledContainerColor = blackColor.copy(alpha = 0.04f),
+                    unfocusedContainerColor = blackColor.copy(alpha = 0.04f),
+                    focusedContainerColor = MaterialTheme.colorScheme.primary.copy(0.1f),
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                ),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password
+                ),
+                visualTransformation = PasswordVisualTransformation(),
+                leadingIcon = {
+                    Icon(painter = painterResource(id = R.drawable.lock), contentDescription = null)
+                }, onValueChange = { newValue: String ->
+                    passwordFieldValue.value = newValue
+                }, placeholder = {
+                    Text(text = "Password", fontSize = 14.sp, textAlign = TextAlign.Center)
+                }, modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row(
@@ -237,11 +249,6 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
 
 
             if (loginVM.isLoggedInWithSuccess.value == true) {
-                navController.popBackStack(Destination.Login.route, inclusive = true)
-                navController.navigate(Destination.Layout.route) {
-                    launchSingleTop = true
-                    restoreState = true
-                }
                 CoroutineScope(Dispatchers.IO).launch {
                     pref.edit {
                         putBoolean("isLoggedIn", true)
@@ -254,7 +261,6 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                         pref.edit {
                             putString("fcmToken", fcmToken)
                         }
-                        Log.v("FCM Token", fcmToken)
                         val authToken = pref.getString("token", null)
                         if (authToken != null) {
                             loginVM.registerToken(authToken, fcmToken)
@@ -268,6 +274,11 @@ fun LoginScreen(navController: NavController, loginVM: LoginVM) {
                         ).show()
                         loginVM.showToast.value = false
                     }
+                }
+                navController.navigate(Destination.Layout.route) {
+                    popUpTo(Destination.Login.route) { inclusive = true }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             } else if (loginVM.isLoggedInWithSuccess.value == false) {
                 if (loginVM.showToast.value) {

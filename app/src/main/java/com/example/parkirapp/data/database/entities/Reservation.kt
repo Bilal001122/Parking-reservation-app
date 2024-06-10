@@ -9,7 +9,8 @@ import androidx.room.PrimaryKey
     foreignKeys = [ForeignKey(
         entity = Parking::class,
         parentColumns = ["id"],
-        childColumns = ["parkingId"]
+        childColumns = ["parkingId"],
+        onDelete = ForeignKey.CASCADE
     )],
 )
 data class Reservation(

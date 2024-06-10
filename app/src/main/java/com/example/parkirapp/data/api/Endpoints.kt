@@ -89,6 +89,9 @@ data class RegisterTokenRequest(
     val token: String
 )
 
+data class LoginWithGoogleRequest(
+    val token: String
+)
 interface Endpoints {
 
     @POST("api/sendToken")
@@ -158,6 +161,11 @@ interface Endpoints {
         @Header("Authorization") authHeader: String,
         @Body registerTokenRequest: RegisterTokenRequest
     ): Response<String>
+
+    @POST("api/auth/loginWithGoogle")
+    suspend fun loginWithGoogle(
+        @Body token: LoginWithGoogleRequest
+    ): Response<UserResponseLogin>
 
     companion object {
         var endpoint: Endpoints? = null

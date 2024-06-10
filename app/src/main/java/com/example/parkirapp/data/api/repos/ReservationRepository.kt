@@ -77,4 +77,8 @@ class ReservationRepository(
     fun updateReservation(reservationId : Int, newStatus : String) {
         reservationDao.updateReservation(reservationId, newStatus)
     }
+
+    fun deleteAllReservations() {
+        reservationDao.deleteAllReservations()
+    }
 }

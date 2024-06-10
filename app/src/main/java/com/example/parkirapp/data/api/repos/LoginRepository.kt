@@ -1,6 +1,7 @@
 package com.example.parkirapp.data.api.repos
 
 import com.example.parkirapp.data.api.Endpoints
+import com.example.parkirapp.data.api.LoginWithGoogleRequest
 import com.example.parkirapp.data.api.RegisterTokenRequest
 import com.example.parkirapp.data.api.UserLogin
 import com.example.parkirapp.data.api.UserResponse
@@ -28,5 +29,12 @@ class LoginRepository {
     ): Response<String> {
         val registerTokenRequest: RegisterTokenRequest = RegisterTokenRequest(token)
         return Endpoints.createEndpoint().registerToken(authHeader, registerTokenRequest)
+    }
+
+    suspend fun loginWithGoogle(
+        token: String
+    ): Response<UserResponseLogin> {
+        val loginWithGoogleRequest = LoginWithGoogleRequest(token)
+        return Endpoints.createEndpoint().loginWithGoogle(loginWithGoogleRequest)
     }
 }

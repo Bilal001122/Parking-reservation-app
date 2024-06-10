@@ -65,7 +65,8 @@ interface ReservationDao {
             p.updatedAt AS parkingUpdatedAt,
             p.createdAt AS parkingCreatedAt
         FROM reservation r
-        INNER JOIN parking p ON r.parkingId = p.id
+        INNER JOIN parking p ON r.parkingId = p.id 
+        ORDER BY r.id DESC
     """)
     fun getAllReservationsWithParking(): List<ReservationWithParking>
     @Query("SELECT * FROM reservation WHERE id = :id")
@@ -81,4 +82,6 @@ interface ReservationDao {
     fun updateReservation(reservationId: Int, newStatus: String)
     @Insert
     fun insertReservations(reservations: List<Reservation>)
+    @Query("DELETE FROM reservation")
+    fun deleteAllReservations()
 }

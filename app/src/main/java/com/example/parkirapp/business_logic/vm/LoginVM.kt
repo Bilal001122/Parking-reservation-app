@@ -82,6 +82,36 @@ class LoginVM(
         }
     }
 
+    fun loginWithGoogle(sendedToken: String) {
+        viewModelScope.launch {
+            isLoading.value = true
+            withContext(Dispatchers.IO) {
+                try {
+                    val response = loginRepository.loginWithGoogle(sendedToken)
+                    if (response.isSuccessful) {
+                        isLoggedInWithSuccess.value = true
+                        isLoading.value = false
+                        currentUser = response.body()?.user
+                        token.value = response.body()?.token
+                        toastMessage.value = "Login successful"
+                        showToast.value = true
+                    } else {
+                        isLoading.value = false
+                        isLoggedInWithSuccess.value = false
+                        showToast.value = true
+                        val jsonObject = response.errorBody()?.string()?.let { JSONObject(it) }
+                        toastMessage.value = jsonObject?.getString("message").toString()
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    isLoading.value = false
+                    toastMessage.value = e.message
+                    showToast.value = true
+                }
+            }
+        }
+    }
+
     class Factory(private val loginRepository: LoginRepository) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return LoginVM(loginRepository) as T

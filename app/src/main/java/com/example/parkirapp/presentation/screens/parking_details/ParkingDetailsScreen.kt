@@ -53,9 +53,6 @@ fun ParkingDetailsScreen(
         it.id == parkingId
     }.first()
     LaunchedEffect(Unit) {
-//        if (parkingId != null) {
-//            parkingsVM.getParkingById(parkingId)
-//        }
         pref.getString("token", null)?.let {
             parkingsVM.getFavoriteParkings(it)
         }

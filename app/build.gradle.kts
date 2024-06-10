@@ -104,6 +104,8 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
 
     implementation ("com.google.android.gms:play-services-auth:20.4.1")
+
+    implementation("com.lightspark:compose-qr-code:1.0.1")
 }
 
 // Allow references to generated code

@@ -57,4 +57,8 @@ class ParkingsRepository(
         parkingDao.insertParkings(parkings)
     }
 
+    suspend fun deleteAllParkings() {
+        parkingDao.deleteAllParkings()
+    }
+
 }

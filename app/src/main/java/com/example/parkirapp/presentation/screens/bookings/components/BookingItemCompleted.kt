@@ -47,6 +47,7 @@ import com.example.parkirapp.data.database.daos.ReservationWithParking
 import com.example.parkirapp.presentation.screens.parking_details.components.ParkingField
 import com.example.parkirapp.presentation.theme.blackColor
 import com.example.parkirapp.utils.BASE_URL
+import com.lightspark.composeqr.QrCodeView
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,12 +84,9 @@ fun BookingItemCompleted(
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-                AsyncImage(
-                    model = booking.qrCode,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(200.dp)
+                QrCodeView(
+                    data = booking.reservationId.toString(),
+                    modifier = Modifier.size(200.dp)
                 )
             }
         }

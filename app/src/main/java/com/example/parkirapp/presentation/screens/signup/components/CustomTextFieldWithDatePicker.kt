@@ -88,6 +88,9 @@ fun CustomTextFieldWithDatePicker(
         },
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                showDatePicker.value = true
+            }
     )
     if (showDatePicker.value) {
         DatePickerDialog(

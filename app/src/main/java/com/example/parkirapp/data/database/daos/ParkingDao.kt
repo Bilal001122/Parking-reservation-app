@@ -21,4 +21,6 @@ interface ParkingDao {
     fun updateParking(parking: Parking)
     @Insert
     fun insertParkings(parkings: List<Parking>)
+    @Query("DELETE FROM parking")
+    fun deleteAllParkings()
 }

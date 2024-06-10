@@ -1,6 +1,7 @@
 package com.example.parkirapp.presentation.screens.profile
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,16 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.parkirapp.business_logic.vm.LoginVM
+import com.example.parkirapp.business_logic.vm.ParkingsVM
+import com.example.parkirapp.business_logic.vm.ReservationVM
 import com.example.parkirapp.presentation.navigation.Destination
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Composable
-fun ProfileScreen(navController: NavController, loginVM: LoginVM) {
+fun ProfileScreen(navController: NavController, loginVM: LoginVM ,parkingsVM: ParkingsVM, reservationVM: ReservationVM) {
     val pref = LocalContext.current.getSharedPreferences("parkir_sp", Context.MODE_PRIVATE)
-
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         pref.getString("token", null)?.let {
             loginVM.getUserInformation(it)
@@ -207,13 +206,24 @@ fun ProfileScreen(navController: NavController, loginVM: LoginVM) {
                     }
                     TextButton(
                         onClick = {
-                            CoroutineScope(Dispatchers.IO).launch {
-                                pref.edit().remove("token").apply()
-                                pref.edit().remove("isLoggedIn").apply()
-                                pref.edit().remove("userId").apply()
-                                withContext(Dispatchers.Main) {
-                                    navController.navigate(Destination.Login.route)
+                            // Removing preferences
+                            val editor = pref.edit()
+                            reservationVM.deleteAllReservations()
+                            parkingsVM.removeParkingsFromDatabase()
+                            editor.remove("token")
+                            editor.remove("isLoggedIn")
+                            editor.remove("userId")
+                            editor.remove("fcmToken")
+                            val success = editor.commit()  // Synchronous commit
+                            if (success) {
+                                navController.navigate(Destination.Login.route) {
+                                    popUpTo(Destination.Layout.route) { inclusive = true }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
+                            } else {
+                                // Handle failure to commit changes if needed
+                                Toast.makeText(context, "Failed to log out. Please try again.", Toast.LENGTH_SHORT).show()
                             }
                         },
                         shape = CircleShape,

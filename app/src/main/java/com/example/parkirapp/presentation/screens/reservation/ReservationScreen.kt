@@ -86,8 +86,7 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
             )
             DatePicker(
                 state = datePickerState,
-
-                )
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -101,6 +100,7 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                     Text(text = "Start Hour", fontWeight = FontWeight.SemiBold)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(
@@ -109,6 +109,9 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                             .background(
                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                             )
+                            .clickable {
+                                showEnteredTime.value = true
+                            }
                             .padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Text(text = "${enteredTime.hour}:${enteredTime.minute} AM")
@@ -116,9 +119,6 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                         Icon(
                             painter = painterResource(id = R.drawable.hour),
                             contentDescription = null,
-                            modifier = Modifier.clickable {
-                                showEnteredTime.value = true
-                            }
                         )
                     }
                     if (showEnteredTime.value) {
@@ -142,7 +142,7 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null,
                     modifier = Modifier
                         .padding(
-                            horizontal = 8.dp,
+                            horizontal = 30.dp,
                         )
                         .padding(
                             top = 26.dp,
@@ -154,6 +154,7 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                     Text(text = "End Hour", fontWeight = FontWeight.SemiBold)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(
@@ -162,16 +163,17 @@ fun ReservationScreen(parkingId: Int?, navController: NavHostController, parking
                             .background(
                                 MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                             )
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                            .clickable {
+                                showSortingTime.value = true
+                            }
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                        ,
                     ) {
                         Text(text = "${sortingTime.hour}:${sortingTime.minute} PM")
                         Spacer(modifier = Modifier.width(12.dp))
                         Icon(
                             painter = painterResource(id = R.drawable.hour),
                             contentDescription = null,
-                            modifier = Modifier.clickable {
-                                showSortingTime.value = true
-                            }
                         )
                     }
 

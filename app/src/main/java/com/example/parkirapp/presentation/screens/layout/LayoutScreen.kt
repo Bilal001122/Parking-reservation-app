@@ -2,7 +2,6 @@ package com.example.parkirapp.presentation.screens.layout
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -59,7 +58,7 @@ fun LayoutScreen(reservationVM: ReservationVM, registrationVM: RegistrationVM, l
                    navController = navController,
                ) { item ->
                    if (!isLoggedIn) {
-                       Toast.makeText(context, "Please login first", Toast.LENGTH_SHORT).show()
+                       navController.navigate(Destination.Login.route)
                    } else navController.navigate(item.route)
                }
            }
